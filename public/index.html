@@ -1,0 +1,148 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Lola + Mark + Ollie</title>
+<link rel="stylesheet" href="style.css">
+<link rel="manifest" href="manifest.webmanifest">
+<link rel="icon" href="icon.svg" type="image/svg+xml">
+<meta name="theme-color" content="#8B79B8">
+</head>
+<body>
+<div class="app">
+  <div class="topbar">
+    <span class="brand"><span class="n-lola">Lola</span> <span class="plus">+</span> <span class="n-mark">Mark</span> <span class="plus">+</span> <span class="n-ollie">Ollie</span></span>
+    <span class="today-label" id="today-label"></span>
+    <nav class="tabs">
+      <button class="tab active" data-screen="cal">Calendar</button>
+      <button class="tab" data-screen="day">Today</button>
+      <button class="tab" data-screen="compose">Write yours</button>
+      <button class="tab" data-screen="us">Us</button>
+    </nav>
+    <div class="who-toggle" title="Who's using the tablet?">
+      <span class="label">I am:</span>
+      <button class="avatar lola" id="who-lola">L</button>
+      <button class="avatar mark" id="who-mark">M</button>
+    </div>
+  </div>
+
+  <!-- Calendar -->
+  <section class="screen active panel" id="screen-cal">
+    <div class="cal-head">
+      <button class="nav-btn" id="prev-month" aria-label="Previous month">‹</button>
+      <h2 id="cal-title"></h2>
+      <button class="nav-btn" id="next-month" aria-label="Next month">›</button>
+      <div class="legend">
+        <span><i class="dot lola"></i> Lola</span>
+        <span><i class="dot mark"></i> Mark</span>
+        <span><i class="dot ollie"></i> Ollie</span>
+        <span><i class="dot shared"></i> Together</span>
+        <span>♥ = both wrote</span>
+      </div>
+    </div>
+    <div class="agenda" id="agenda"></div>
+    <div class="cal-grid" id="cal-grid"></div>
+  </section>
+
+  <!-- Day view -->
+  <section class="screen panel" id="screen-day">
+    <button class="back" id="back-to-cal">← Back to calendar</button>
+    <div class="day-head"><h2 id="day-title"></h2></div>
+    <div class="day-events" id="day-events"></div>
+    <div class="cols" id="day-cols"></div>
+  </section>
+
+  <!-- Compose -->
+  <section class="screen panel compose" id="screen-compose">
+    <button class="back" id="back-to-day">← Back to the day</button>
+    <h2 id="compose-title"></h2>
+    <p class="sub">Takes about two minutes. Saved the moment you tap the button.</p>
+    <div class="field">
+      <label id="lbl-love">A thing they do that you love</label>
+      <textarea id="f-love" placeholder="Tap to write…"></textarea>
+    </div>
+    <div class="field">
+      <label>How you're feeling today</label>
+      <div class="moods" id="moods"></div>
+      <textarea id="f-feeling" style="margin-top:8px" placeholder="A few words more, if you like…"></textarea>
+    </div>
+    <div class="field">
+      <label>Something you're excited for</label>
+      <textarea id="f-excited" placeholder="Tap to write…"></textarea>
+    </div>
+    <div class="field">
+      <label id="lbl-thought">A thought that might interest them</label>
+      <textarea id="f-thought" placeholder="Tap to write…"></textarea>
+    </div>
+    <div class="field">
+      <label>Check in on a goal you share</label>
+      <textarea id="f-goal" placeholder="Wedding, September 2028 — anything to add or celebrate?"></textarea>
+    </div>
+    <div class="field">
+      <label>The Ollie report <span style="color:var(--muted);font-weight:400">(optional, one per day)</span></label>
+      <textarea id="f-ollie" placeholder="Walks, snacks, crimes committed…"></textarea>
+    </div>
+    <button class="btn shared-btn" id="save-entry">Save today's five</button>
+  </section>
+
+  <!-- Us -->
+  <section class="screen panel" id="screen-us">
+    <div class="day-head" style="margin-bottom:16px;">
+      <h2 class="serif" style="font-size:1.45rem; margin:0;">Us</h2>
+      <span class="today-label">the running story of Lola, Mark &amp; Ollie</span>
+    </div>
+    <div class="cards3" id="us-cards"></div>
+  </section>
+</div>
+
+<!-- Add event dialog -->
+<dialog id="event-dialog">
+  <h3>Add to the calendar</h3>
+  <div class="field"><label>What is it?</label><input id="ev-title" placeholder="Dinner with the Halls"></div>
+  <div class="row2">
+    <div class="field"><label>Date</label><input id="ev-date" type="date"></div>
+    <div class="field"><label>Time</label><input id="ev-time" type="time"></div>
+  </div>
+  <div class="field"><label>Whose is it?</label>
+    <select id="ev-who">
+      <option value="shared">Together</option>
+      <option value="lola">Lola</option>
+      <option value="mark">Mark</option>
+      <option value="ollie">Ollie</option>
+    </select>
+  </div>
+  <div class="dialog-actions">
+    <button class="btn ghost" id="ev-cancel">Cancel</button>
+    <button class="btn shared-btn" id="ev-save">Add event</button>
+  </div>
+</dialog>
+
+<!-- Add goal dialog -->
+<dialog id="goal-dialog">
+  <h3>A goal to chase together</h3>
+  <div class="field"><label>The goal</label><input id="g-title" placeholder="Hike 12 trails this year"></div>
+  <div class="row2">
+    <div class="field"><label>Target (number, optional)</label><input id="g-target" type="number" inputmode="decimal"></div>
+    <div class="field"><label>Unit</label><input id="g-unit" placeholder="$, trails, books…"></div>
+  </div>
+  <div class="dialog-actions">
+    <button class="btn ghost" id="g-cancel">Cancel</button>
+    <button class="btn shared-btn" id="g-save">Add goal</button>
+  </div>
+</dialog>
+
+<!-- Update goal dialog -->
+<dialog id="progress-dialog">
+  <h3 id="p-title">Update progress</h3>
+  <div class="field"><label>Current value</label><input id="p-value" type="number" inputmode="decimal"></div>
+  <div class="dialog-actions">
+    <button class="btn ghost" id="p-cancel">Cancel</button>
+    <button class="btn shared-btn" id="p-save">Save</button>
+  </div>
+</dialog>
+
+<div class="toast" id="toast"></div>
+<script src="app.js"></script>
+</body>
+</html>

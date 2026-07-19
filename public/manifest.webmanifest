@@ -1,0 +1,12 @@
+{
+  "name": "Lola + Mark + Ollie",
+  "short_name": "L+M+O",
+  "description": "Our shared calendar and daily connection ritual",
+  "start_url": "/",
+  "display": "standalone",
+  "background_color": "#FDFBF8",
+  "theme_color": "#8B79B8",
+  "icons": [
+    { "src": "icon.svg", "sizes": "any", "type": "image/svg+xml", "purpose": "any" }
+  ]
+}
