@@ -6,6 +6,7 @@ import { StdioServerTransport } from "@modelcontextprotocol/sdk/server/stdio.js"
 import { z } from "zod";
 import { db } from "../src/db.js";
 import { collectWeekData } from "../src/recap.js";
+import { affordability } from "../src/rentals.js";
 
 const server = new McpServer({ name: "lola-mark-ollie", version: "0.1.0" });
 
@@ -171,6 +172,186 @@ server.tool(
     }
     return json(collectWeekData(end));
   }
+);
+
+// ---------- Rental hunt ----------
+const RENTAL_STATUS = z.enum(["toured", "shortlist", "applied", "passed", "chosen"]);
+const MONEY = z.number().min(0);
+
+const rentalMoneyFields = {
+  rent: MONEY.optional(),
+  utilities: MONEY.optional().describe("electric + gas + water + trash, monthly"),
+  internet: MONEY.optional(),
+  insurance: MONEY.optional().describe("renters insurance, monthly"),
+  pet_rent: MONEY.optional().describe("Ollie's monthly pet rent"),
+  parking: MONEY.optional(),
+  other_monthly: MONEY.optional().describe("amenity/HOA/storage fees, monthly"),
+  commute: MONEY.optional().describe("added monthly commute cost from this location"),
+  deposit: MONEY.optional().describe("security deposit, one-time"),
+  pet_deposit: MONEY.optional().describe("one-time"),
+  application_fee: MONEY.optional().describe("one-time"),
+  move_in_other: MONEY.optional().describe("admin fees, movers — one-time"),
+};
+
+server.tool(
+  "add_rental",
+  "Add a rental place that was toured (or is being considered), with its monthly and move-in costs.",
+  {
+    name: z.string().min(1).describe("a memorable nickname, e.g. 'the one with the big kitchen'"),
+    address: z.string().optional(),
+    url: z.string().optional().describe("listing link"),
+    beds: z.number().optional(),
+    baths: z.number().optional(),
+    sqft: z.number().int().optional(),
+    toured_on: DATE.optional(),
+    rating: z.number().int().min(1).max(5).optional().describe("how much they liked it, 1-5"),
+    status: RENTAL_STATUS.optional(),
+    notes: z.string().optional(),
+    ...rentalMoneyFields,
+  },
+  async (fields) => {
+    const cols = Object.keys(fields).filter((k) => fields[k] !== undefined);
+    const info = db
+      .prepare(`INSERT INTO rentals (${cols.join(", ")}) VALUES (${cols.map((c) => "@" + c).join(", ")})`)
+      .run(Object.fromEntries(cols.map((c) => [c, fields[c]])));
+    return json(db.prepare("SELECT * FROM rentals WHERE id = ?").get(info.lastInsertRowid));
+  }
+);
+
+server.tool(
+  "update_rental",
+  "Update a rental place's details, costs, rating, or status (find the id via get_affordability).",
+  {
+    id: z.number().int(),
+    name: z.string().optional(),
+    address: z.string().optional(),
+    url: z.string().optional(),
+    beds: z.number().optional(),
+    baths: z.number().optional(),
+    sqft: z.number().int().optional(),
+    toured_on: DATE.optional(),
+    rating: z.number().int().min(1).max(5).optional(),
+    status: RENTAL_STATUS.optional(),
+    notes: z.string().optional(),
+    ...rentalMoneyFields,
+  },
+  async ({ id, ...fields }) => {
+    const existing = db.prepare("SELECT * FROM rentals WHERE id = ?").get(id);
+    if (!existing) return json({ error: "rental not found" });
+    const cols = Object.keys(fields).filter((k) => fields[k] !== undefined);
+    if (cols.length) {
+      db.prepare(
+        `UPDATE rentals SET ${cols.map((c) => `${c} = @${c}`).join(", ")}, updated_at = datetime('now') WHERE id = @id`
+      ).run({ ...Object.fromEntries(cols.map((c) => [c, fields[c]])), id });
+    }
+    return json(db.prepare("SELECT * FROM rentals WHERE id = ?").get(id));
+  }
+);
+
+server.tool(
+  "delete_rental",
+  "Remove a rental place from the list.",
+  { id: z.number().int() },
+  async ({ id }) => {
+    const info = db.prepare("DELETE FROM rentals WHERE id = ?").run(id);
+    return json({ deleted: info.changes > 0 });
+  }
+);
+
+server.tool(
+  "set_income",
+  "Add or update a monthly income source. Pass id to update, omit it to add. " +
+    "amount is average monthly take-home; gross_amount (optional) is before tax.",
+  {
+    id: z.number().int().optional(),
+    who: z.enum(["lola", "mark", "shared"]).optional(),
+    label: z.string().optional(),
+    amount: MONEY.optional(),
+    gross_amount: MONEY.optional(),
+  },
+  async ({ id, ...fields }) => {
+    if (id) {
+      const existing = db.prepare("SELECT * FROM incomes WHERE id = ?").get(id);
+      if (!existing) return json({ error: "income not found" });
+      const cols = Object.keys(fields).filter((k) => fields[k] !== undefined);
+      if (cols.length) {
+        db.prepare(`UPDATE incomes SET ${cols.map((c) => `${c} = @${c}`).join(", ")} WHERE id = @id`)
+          .run({ ...Object.fromEntries(cols.map((c) => [c, fields[c]])), id });
+      }
+      return json(db.prepare("SELECT * FROM incomes WHERE id = ?").get(id));
+    }
+    if (!fields.who || !fields.label) return json({ error: "who and label required to add income" });
+    const info = db
+      .prepare("INSERT INTO incomes (who, label, amount, gross_amount) VALUES (?, ?, ?, ?)")
+      .run(fields.who, fields.label, fields.amount ?? 0, fields.gross_amount ?? null);
+    return json(db.prepare("SELECT * FROM incomes WHERE id = ?").get(info.lastInsertRowid));
+  }
+);
+
+server.tool(
+  "set_expense",
+  "Add or update a monthly household expense. Pass id to update, omit it to add. " +
+    "essential=false marks it cuttable; replaced_by_move=true means it disappears after moving " +
+    "(current rent, current utilities).",
+  {
+    id: z.number().int().optional(),
+    name: z.string().optional(),
+    category: z.string().optional(),
+    amount: MONEY.optional(),
+    who: z.enum(["lola", "mark", "shared"]).optional(),
+    essential: z.boolean().optional(),
+    replaced_by_move: z.boolean().optional(),
+  },
+  async ({ id, essential, replaced_by_move, ...rest }) => {
+    const fields = {
+      ...rest,
+      ...(essential === undefined ? {} : { essential: essential ? 1 : 0 }),
+      ...(replaced_by_move === undefined ? {} : { replaced_by_move: replaced_by_move ? 1 : 0 }),
+    };
+    if (id) {
+      const existing = db.prepare("SELECT * FROM expenses WHERE id = ?").get(id);
+      if (!existing) return json({ error: "expense not found" });
+      const cols = Object.keys(fields).filter((k) => fields[k] !== undefined);
+      if (cols.length) {
+        db.prepare(`UPDATE expenses SET ${cols.map((c) => `${c} = @${c}`).join(", ")} WHERE id = @id`)
+          .run({ ...Object.fromEntries(cols.map((c) => [c, fields[c]])), id });
+      }
+      return json(db.prepare("SELECT * FROM expenses WHERE id = ?").get(id));
+    }
+    if (!fields.name) return json({ error: "name required to add an expense" });
+    const info = db
+      .prepare(
+        "INSERT INTO expenses (name, category, amount, who, essential, replaced_by_move) VALUES (?, ?, ?, ?, ?, ?)"
+      )
+      .run(
+        fields.name,
+        fields.category ?? "Other",
+        fields.amount ?? 0,
+        fields.who ?? "shared",
+        fields.essential ?? 1,
+        fields.replaced_by_move ?? 0
+      );
+    return json(db.prepare("SELECT * FROM expenses WHERE id = ?").get(info.lastInsertRowid));
+  }
+);
+
+server.tool(
+  "delete_expense",
+  "Remove a household expense (find the id via get_affordability).",
+  { id: z.number().int() },
+  async ({ id }) => {
+    const info = db.prepare("DELETE FROM expenses WHERE id = ?").run(id);
+    return json({ deleted: info.changes > 0 });
+  }
+);
+
+server.tool(
+  "get_affordability",
+  "The full rental affordability picture: household income and expenses, the max the couple " +
+    "can spend on housing, and every toured place scored — all-in monthly cost, what's left over, " +
+    "the verdict (comfortable/tight/over), and exactly which flexible expenses to cut to make it work.",
+  { status: RENTAL_STATUS.optional().describe("only score places with this status") },
+  async ({ status }) => json(affordability({ status }))
 );
 
 const transport = new StdioServerTransport();
