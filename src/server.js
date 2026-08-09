@@ -3,6 +3,7 @@ import path from "node:path";
 import { fileURLToPath } from "node:url";
 import { db, getSetting, setSetting } from "./db.js";
 import { generateRecap } from "./recap.js";
+import { affordability } from "./rentals.js";
 
 const here = path.dirname(fileURLToPath(import.meta.url));
 const app = express();
@@ -210,6 +211,174 @@ app.post("/api/recap", async (req, res) => {
     console.error(err);
     res.status(500).json({ error: err.message });
   }
+});
+
+// ---------- Rental hunt ----------
+const RENTAL_STATUSES = ["toured", "shortlist", "applied", "passed", "chosen"];
+const RENTAL_NUMBERS = [
+  "beds", "baths", "sqft", "rating", "rent", "utilities", "internet", "insurance",
+  "pet_rent", "parking", "other_monthly", "commute", "deposit", "pet_deposit",
+  "application_fee", "move_in_other",
+];
+const RENTAL_TEXT = ["name", "address", "url", "toured_on", "status", "notes"];
+
+// Pull only known columns off the body, coercing numbers and dropping anything
+// the caller didn't send so PATCH can be partial.
+function pickFields(body, textCols, numberCols, boolCols = []) {
+  const out = {};
+  for (const k of textCols) {
+    if (body[k] !== undefined) out[k] = body[k] === null || body[k] === "" ? null : String(body[k]);
+  }
+  for (const k of numberCols) {
+    if (body[k] !== undefined) {
+      if (body[k] === null || body[k] === "") out[k] = null;
+      else {
+        const n = Number(body[k]);
+        if (!Number.isFinite(n)) return { error: `${k} must be a number` };
+        out[k] = n;
+      }
+    }
+  }
+  for (const k of boolCols) {
+    if (body[k] !== undefined) out[k] = body[k] ? 1 : 0;
+  }
+  return { fields: out };
+}
+
+function updateRow(table, id, fields) {
+  const keys = Object.keys(fields);
+  if (keys.length) {
+    db.prepare(
+      `UPDATE ${table} SET ${keys.map((k) => `${k} = @${k}`).join(", ")} WHERE id = @id`
+    ).run({ ...fields, id });
+  }
+  return db.prepare(`SELECT * FROM ${table} WHERE id = ?`).get(id);
+}
+
+app.get("/api/rentals", (_req, res) => {
+  res.json(db.prepare("SELECT * FROM rentals ORDER BY id").all());
+});
+
+app.post("/api/rentals", (req, res) => {
+  const body = req.body ?? {};
+  if (!body.name) return bad(res, "name required");
+  if (body.status && !RENTAL_STATUSES.includes(body.status))
+    return bad(res, `status must be one of ${RENTAL_STATUSES.join("|")}`);
+  if (body.toured_on && !DATE_RE.test(body.toured_on)) return bad(res, "toured_on must be YYYY-MM-DD");
+  const { fields, error } = pickFields(body, RENTAL_TEXT, RENTAL_NUMBERS);
+  if (error) return bad(res, error);
+  const cols = Object.keys(fields);
+  const info = db
+    .prepare(
+      `INSERT INTO rentals (${cols.join(", ")}) VALUES (${cols.map((c) => "@" + c).join(", ")})`
+    )
+    .run(fields);
+  res.json(db.prepare("SELECT * FROM rentals WHERE id = ?").get(info.lastInsertRowid));
+});
+
+app.patch("/api/rentals/:id", (req, res) => {
+  const existing = db.prepare("SELECT * FROM rentals WHERE id = ?").get(req.params.id);
+  if (!existing) return res.status(404).json({ error: "place not found" });
+  const body = req.body ?? {};
+  if (body.status && !RENTAL_STATUSES.includes(body.status))
+    return bad(res, `status must be one of ${RENTAL_STATUSES.join("|")}`);
+  if (body.toured_on && !DATE_RE.test(body.toured_on)) return bad(res, "toured_on must be YYYY-MM-DD");
+  const { fields, error } = pickFields(body, RENTAL_TEXT, RENTAL_NUMBERS);
+  if (error) return bad(res, error);
+  fields.updated_at = new Date().toISOString().slice(0, 19).replace("T", " ");
+  res.json(updateRow("rentals", req.params.id, fields));
+});
+
+app.delete("/api/rentals/:id", (req, res) => {
+  db.prepare("DELETE FROM rentals WHERE id = ?").run(req.params.id);
+  res.json({ ok: true });
+});
+
+// ---------- Income ----------
+app.get("/api/income", (_req, res) => {
+  res.json(db.prepare("SELECT * FROM incomes ORDER BY who, id").all());
+});
+
+app.post("/api/income", (req, res) => {
+  const body = req.body ?? {};
+  if (!body.label) return bad(res, "label required");
+  if (!["lola", "mark", "shared"].includes(body.who)) return bad(res, "who must be lola|mark|shared");
+  const { fields, error } = pickFields(body, ["who", "label", "notes"], ["amount", "gross_amount"]);
+  if (error) return bad(res, error);
+  const cols = Object.keys(fields);
+  const info = db
+    .prepare(`INSERT INTO incomes (${cols.join(", ")}) VALUES (${cols.map((c) => "@" + c).join(", ")})`)
+    .run(fields);
+  res.json(db.prepare("SELECT * FROM incomes WHERE id = ?").get(info.lastInsertRowid));
+});
+
+app.patch("/api/income/:id", (req, res) => {
+  const existing = db.prepare("SELECT * FROM incomes WHERE id = ?").get(req.params.id);
+  if (!existing) return res.status(404).json({ error: "income not found" });
+  const body = req.body ?? {};
+  if (body.who && !["lola", "mark", "shared"].includes(body.who))
+    return bad(res, "who must be lola|mark|shared");
+  const { fields, error } = pickFields(body, ["who", "label", "notes"], ["amount", "gross_amount"]);
+  if (error) return bad(res, error);
+  res.json(updateRow("incomes", req.params.id, fields));
+});
+
+app.delete("/api/income/:id", (req, res) => {
+  db.prepare("DELETE FROM incomes WHERE id = ?").run(req.params.id);
+  res.json({ ok: true });
+});
+
+// ---------- Monthly expenses ----------
+app.get("/api/expenses", (_req, res) => {
+  res.json(db.prepare("SELECT * FROM expenses ORDER BY category, id").all());
+});
+
+app.post("/api/expenses", (req, res) => {
+  const body = req.body ?? {};
+  if (!body.name) return bad(res, "name required");
+  if (body.who && !["lola", "mark", "shared"].includes(body.who))
+    return bad(res, "who must be lola|mark|shared");
+  const { fields, error } = pickFields(
+    body,
+    ["name", "category", "who", "notes"],
+    ["amount"],
+    ["essential", "replaced_by_move"]
+  );
+  if (error) return bad(res, error);
+  const cols = Object.keys(fields);
+  const info = db
+    .prepare(`INSERT INTO expenses (${cols.join(", ")}) VALUES (${cols.map((c) => "@" + c).join(", ")})`)
+    .run(fields);
+  res.json(db.prepare("SELECT * FROM expenses WHERE id = ?").get(info.lastInsertRowid));
+});
+
+app.patch("/api/expenses/:id", (req, res) => {
+  const existing = db.prepare("SELECT * FROM expenses WHERE id = ?").get(req.params.id);
+  if (!existing) return res.status(404).json({ error: "expense not found" });
+  const body = req.body ?? {};
+  if (body.who && !["lola", "mark", "shared"].includes(body.who))
+    return bad(res, "who must be lola|mark|shared");
+  const { fields, error } = pickFields(
+    body,
+    ["name", "category", "who", "notes"],
+    ["amount"],
+    ["essential", "replaced_by_move"]
+  );
+  if (error) return bad(res, error);
+  res.json(updateRow("expenses", req.params.id, fields));
+});
+
+app.delete("/api/expenses/:id", (req, res) => {
+  db.prepare("DELETE FROM expenses WHERE id = ?").run(req.params.id);
+  res.json({ ok: true });
+});
+
+// ---------- The answer: can we afford it? ----------
+app.get("/api/affordability", (req, res) => {
+  const status = req.query.status;
+  if (status && !RENTAL_STATUSES.includes(status))
+    return bad(res, `status must be one of ${RENTAL_STATUSES.join("|")}`);
+  res.json(affordability({ status }));
 });
 
 // ---------- Settings ----------

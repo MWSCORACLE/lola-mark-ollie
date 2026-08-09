@@ -18,6 +18,7 @@
       <button class="tab active" data-screen="cal">Calendar</button>
       <button class="tab" data-screen="day">Today</button>
       <button class="tab" data-screen="compose">Write yours</button>
+      <button class="tab" data-screen="rent">Rentals</button>
       <button class="tab" data-screen="us">Us</button>
     </nav>
     <div class="who-toggle" title="Who's using the tablet?">
@@ -86,6 +87,41 @@
     <button class="btn shared-btn" id="save-entry">Save today's five</button>
   </section>
 
+  <!-- Rentals -->
+  <section class="screen panel" id="screen-rent">
+    <div class="day-head" style="margin-bottom:16px;">
+      <h2 class="serif" style="font-size:1.45rem; margin:0;">Where we live next</h2>
+      <span class="today-label">what we can afford, and what it would take</span>
+    </div>
+    <div class="cards3" id="rent-headline"></div>
+
+    <div class="section-head">
+      <h3 class="serif">Places we've toured</h3>
+      <div class="section-actions">
+        <select id="rent-filter" class="mini-select" aria-label="Filter places">
+          <option value="">All places</option>
+          <option value="toured">Toured</option>
+          <option value="shortlist">Shortlist</option>
+          <option value="applied">Applied</option>
+          <option value="chosen">Chosen</option>
+          <option value="passed">Passed</option>
+        </select>
+        <button class="btn small shared-btn" id="add-rental-btn">+ Add a place</button>
+      </div>
+    </div>
+    <div class="places" id="rent-places"></div>
+
+    <div class="section-head">
+      <h3 class="serif">Our money</h3>
+      <div class="section-actions">
+        <button class="btn small ghost" id="edit-rules-btn">Budget rules</button>
+        <button class="btn small ghost" id="add-income-btn">+ Income</button>
+        <button class="btn small ghost" id="add-expense-btn">+ Expense</button>
+      </div>
+    </div>
+    <div class="cols" id="rent-money"></div>
+  </section>
+
   <!-- Us -->
   <section class="screen panel" id="screen-us">
     <div class="day-head" style="margin-bottom:16px;">
@@ -139,6 +175,137 @@
   <div class="dialog-actions">
     <button class="btn ghost" id="p-cancel">Cancel</button>
     <button class="btn shared-btn" id="p-save">Save</button>
+  </div>
+</dialog>
+
+<!-- Add / edit a place dialog -->
+<dialog id="rental-dialog" class="tall">
+  <h3 id="r-heading">A place we toured</h3>
+  <div class="field"><label>What do we call it?</label><input id="r-name" placeholder="The one with the big kitchen"></div>
+  <div class="field"><label>Address</label><input id="r-address" placeholder="412 Rosewood Ave #3"></div>
+  <div class="field"><label>Listing link</label><input id="r-url" placeholder="https://…"></div>
+  <div class="row2">
+    <div class="field"><label>Toured on</label><input id="r-toured" type="date"></div>
+    <div class="field"><label>Where it stands</label>
+      <select id="r-status">
+        <option value="toured">Toured</option>
+        <option value="shortlist">Shortlist</option>
+        <option value="applied">Applied</option>
+        <option value="chosen">Chosen</option>
+        <option value="passed">Passed</option>
+      </select>
+    </div>
+  </div>
+  <div class="row2">
+    <div class="field"><label>Beds</label><input id="r-beds" type="number" inputmode="decimal" step="0.5"></div>
+    <div class="field"><label>Baths</label><input id="r-baths" type="number" inputmode="decimal" step="0.5"></div>
+    <div class="field"><label>Sq ft</label><input id="r-sqft" type="number" inputmode="numeric"></div>
+  </div>
+  <div class="field"><label>How much we liked it</label>
+    <div class="stars" id="r-rating"></div>
+  </div>
+
+  <h4 class="dialog-sub">Every month</h4>
+  <div class="row2">
+    <div class="field"><label>Rent</label><input id="r-rent" type="number" inputmode="decimal"></div>
+    <div class="field"><label>Utilities</label><input id="r-utilities" type="number" inputmode="decimal"></div>
+  </div>
+  <div class="row2">
+    <div class="field"><label>Internet</label><input id="r-internet" type="number" inputmode="decimal"></div>
+    <div class="field"><label>Renters insurance</label><input id="r-insurance" type="number" inputmode="decimal"></div>
+  </div>
+  <div class="row2">
+    <div class="field"><label>Ollie's pet rent</label><input id="r-pet-rent" type="number" inputmode="decimal"></div>
+    <div class="field"><label>Parking</label><input id="r-parking" type="number" inputmode="decimal"></div>
+  </div>
+  <div class="row2">
+    <div class="field"><label>Other fees</label><input id="r-other" type="number" inputmode="decimal" placeholder="amenity, storage…"></div>
+    <div class="field"><label>Commute change</label><input id="r-commute" type="number" inputmode="decimal" placeholder="gas, tolls, transit"></div>
+  </div>
+
+  <h4 class="dialog-sub">Before we get the keys</h4>
+  <div class="row2">
+    <div class="field"><label>Security deposit</label><input id="r-deposit" type="number" inputmode="decimal"></div>
+    <div class="field"><label>Pet deposit</label><input id="r-pet-deposit" type="number" inputmode="decimal"></div>
+  </div>
+  <div class="row2">
+    <div class="field"><label>Application fee</label><input id="r-app-fee" type="number" inputmode="decimal"></div>
+    <div class="field"><label>Other move-in</label><input id="r-move-other" type="number" inputmode="decimal" placeholder="admin, movers…"></div>
+  </div>
+
+  <div class="field"><label>What we thought</label><textarea id="r-notes" placeholder="Light in the living room, no dishwasher, landlord seemed lovely…"></textarea></div>
+  <div class="dialog-actions">
+    <button class="btn ghost" id="r-delete" style="margin-right:auto; color:var(--lola); border-color:var(--lola)">Delete</button>
+    <button class="btn ghost" id="r-cancel">Cancel</button>
+    <button class="btn shared-btn" id="r-save">Save place</button>
+  </div>
+</dialog>
+
+<!-- Income dialog -->
+<dialog id="income-dialog">
+  <h3 id="i-heading">Money coming in</h3>
+  <div class="field"><label>Whose is it?</label>
+    <select id="i-who">
+      <option value="mark">Mark</option>
+      <option value="lola">Lola</option>
+      <option value="shared">Both of us</option>
+    </select>
+  </div>
+  <div class="field"><label>What is it?</label><input id="i-label" placeholder="Paycheck, freelance, side gig…"></div>
+  <div class="row2">
+    <div class="field"><label>Monthly take-home</label><input id="i-amount" type="number" inputmode="decimal"></div>
+    <div class="field"><label>Monthly gross <span style="color:var(--muted);font-weight:400">(optional)</span></label><input id="i-gross" type="number" inputmode="decimal"></div>
+  </div>
+  <p class="dialog-note">If the money varies, use an honest average of the last few months — low, not hopeful.</p>
+  <div class="dialog-actions">
+    <button class="btn ghost" id="i-delete" style="margin-right:auto; color:var(--lola); border-color:var(--lola)">Delete</button>
+    <button class="btn ghost" id="i-cancel">Cancel</button>
+    <button class="btn shared-btn" id="i-save">Save</button>
+  </div>
+</dialog>
+
+<!-- Expense dialog -->
+<dialog id="expense-dialog">
+  <h3 id="e-heading">Money going out</h3>
+  <div class="field"><label>What is it?</label><input id="e-name" placeholder="Car payment, groceries, streaming…"></div>
+  <div class="row2">
+    <div class="field"><label>Per month</label><input id="e-amount" type="number" inputmode="decimal"></div>
+    <div class="field"><label>Category</label>
+      <select id="e-category"></select>
+    </div>
+  </div>
+  <div class="field"><label>Whose is it?</label>
+    <select id="e-who">
+      <option value="shared">Both of us</option>
+      <option value="mark">Mark</option>
+      <option value="lola">Lola</option>
+    </select>
+  </div>
+  <label class="check"><input type="checkbox" id="e-flexible"> We could cut this back if we had to</label>
+  <label class="check"><input type="checkbox" id="e-replaced"> This goes away when we move <span class="muted-note">(current rent, current utilities)</span></label>
+  <div class="dialog-actions">
+    <button class="btn ghost" id="e-delete" style="margin-right:auto; color:var(--lola); border-color:var(--lola)">Delete</button>
+    <button class="btn ghost" id="e-cancel">Cancel</button>
+    <button class="btn shared-btn" id="e-save">Save</button>
+  </div>
+</dialog>
+
+<!-- Budget rules dialog -->
+<dialog id="rules-dialog">
+  <h3>Our budget rules</h3>
+  <div class="field">
+    <label>Housing should stay under this share of income</label>
+    <input id="ru-ratio" type="number" inputmode="decimal" step="1" min="1" max="100">
+    <p class="dialog-note">Percent. The old rule of thumb is 30.</p>
+  </div>
+  <div class="field">
+    <label>We want this much left over every month</label>
+    <input id="ru-savings" type="number" inputmode="decimal">
+    <p class="dialog-note">Savings, the wedding fund, breathing room — anything you don't want the rent to eat.</p>
+  </div>
+  <div class="dialog-actions">
+    <button class="btn ghost" id="ru-cancel">Cancel</button>
+    <button class="btn shared-btn" id="ru-save">Save rules</button>
   </div>
 </dialog>
 

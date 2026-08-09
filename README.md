@@ -14,6 +14,15 @@ No cloud account required; the AI layer is optional and toggleable.
   **Ollie report**.
 - **Us screen** — wedding countdown (September 2028), shared goals with progress,
   writing streak, "from the archive" memories, and a Sunday recap.
+- **Rentals** — the rental hunt, with real math. Log every place you tour with its
+  full monthly costs (rent, utilities, internet, insurance, Ollie's pet rent, parking,
+  fees, commute) and move-in costs (deposits, application fees). Enter your average
+  monthly take-home and your monthly expenses — marking which ones are *flexible* and
+  which disappear when you move — and each place gets a verdict (**comfortable /
+  tight / over budget**), what's left over each month, how it sits against your
+  income-share target, and exactly which flexible expenses to cut (biggest first) to
+  make a tight place work. A headline card shows the most you can spend on housing:
+  the tighter of your income-share rule and what your actual budget leaves.
 - **AI layer** —
   1. An **MCP server** so Claude Desktop on the tablet can read/write the calendar,
      entries, and goals conversationally ("add Ollie's grooming Friday at 2").
@@ -76,6 +85,8 @@ Restart Claude Desktop. You can then ask Claude things like:
 - "Add a vet appointment for Ollie next Thursday at 4."
 - "How has Lauren been feeling this week?"
 - "Update the honeymoon fund to 3,100."
+- "Add the apartment we toured today — 412 Rosewood, $1,850 rent, $300 pet deposit."
+- "Can we afford the downtown loft, and what would we need to cut back?"
 
 **Privacy note:** anything Claude reads through these tools is sent to Anthropic
 for processing. The app itself never sends data anywhere.
@@ -98,6 +109,7 @@ data — no network needed.
 src/server.js    Express server + JSON API (port 3467)
 src/db.js        SQLite schema + seed (better-sqlite3, WAL)
 src/recap.js     Weekly recap: local assembly or Claude (claude-opus-4-8)
+src/rentals.js   Rental affordability engine (shared by API + MCP)
 public/          Touch UI (vanilla JS PWA)
 mcp/mcp-server.js  MCP stdio server for Claude Desktop
 data/            The database (back this up)

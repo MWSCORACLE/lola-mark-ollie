@@ -247,6 +247,121 @@ dialog h3 { font-family: "Iowan Old Style", "Palatino Linotype", Palatino, Georg
 .row2 { display: flex; gap: 10px; }
 .row2 .field { flex: 1; }
 
+/* ---------- Rentals ---------- */
+.section-head {
+  display: flex; align-items: center; gap: 12px; flex-wrap: wrap;
+  margin: 26px 0 12px; padding-top: 18px; border-top: 1px solid var(--line);
+}
+.section-head h3 { font-size: 1.15rem; margin: 0; }
+.section-actions { display: flex; gap: 8px; margin-left: auto; flex-wrap: wrap; }
+.mini-select {
+  border: 1px solid var(--line); background: var(--surface-2); color: var(--ink);
+  font: inherit; font-size: 0.85rem; border-radius: 999px; padding: 8px 14px; min-height: 40px;
+}
+
+.stat-note { font-size: 0.78rem; color: var(--muted); margin-top: 6px; }
+.big-count.mark-num { color: var(--mark); }
+.big-count.lola-num { color: var(--lola); }
+
+.places { display: grid; grid-template-columns: repeat(auto-fit, minmax(320px, 1fr)); gap: 16px; }
+.place {
+  background: var(--surface-2); border-radius: 14px; padding: 16px 18px;
+  border-left: 5px solid var(--line);
+}
+.place.comfortable { border-left-color: var(--mark); }
+.place.tight { border-left-color: var(--ollie); }
+.place.over { border-left-color: var(--lola); }
+.place.passed { opacity: 0.6; }
+.place-head { display: flex; align-items: baseline; gap: 10px; flex-wrap: wrap; }
+.place-head h4 {
+  font-family: "Iowan Old Style", "Palatino Linotype", Palatino, Georgia, serif;
+  font-size: 1.08rem; margin: 0;
+}
+.place .addr { font-size: 0.82rem; color: var(--muted); margin: 2px 0 10px; }
+.place .stars-read { color: var(--ollie); font-size: 0.85rem; letter-spacing: 1px; }
+.verdict {
+  font-size: 0.72rem; text-transform: uppercase; letter-spacing: 0.08em; font-weight: 700;
+  padding: 4px 11px; border-radius: 999px; margin-left: auto;
+}
+.verdict.comfortable { background: var(--mark-soft); color: var(--mark); }
+.verdict.tight { background: var(--ollie-soft); color: var(--ollie); }
+.verdict.over { background: var(--lola-soft); color: var(--lola); }
+
+.headline-row { display: flex; align-items: baseline; gap: 8px; flex-wrap: wrap; margin-bottom: 8px; }
+.headline-row .amount { font-size: 1.6rem; font-weight: 700; font-variant-numeric: tabular-nums; }
+.headline-row .per { font-size: 0.82rem; color: var(--muted); }
+
+/* Ratio bar with the rule-of-thumb target marked on it */
+.ratio { position: relative; height: 10px; border-radius: 999px; background: var(--line); overflow: hidden; margin: 4px 0 6px; }
+.ratio i { display: block; height: 100%; border-radius: 999px; background: var(--mark); }
+.ratio.tight i { background: var(--ollie); }
+.ratio.over i { background: var(--lola); }
+.ratio-wrap { position: relative; margin: 10px 0 4px; }
+.ratio-target {
+  position: absolute; top: -3px; width: 2px; height: 16px; background: var(--ink); opacity: 0.45;
+}
+.ratio-legend { display: flex; justify-content: space-between; font-size: 0.75rem; color: var(--muted); }
+
+.breakdown { display: flex; flex-wrap: wrap; gap: 6px; margin: 10px 0; }
+.bit {
+  font-size: 0.75rem; background: var(--surface); border: 1px solid var(--line);
+  border-radius: 999px; padding: 4px 10px; color: var(--muted);
+}
+.bit b { color: var(--ink); font-weight: 600; font-variant-numeric: tabular-nums; }
+
+.verdict-line { font-size: 0.9rem; margin: 8px 0 2px; }
+.verdict-line b { font-variant-numeric: tabular-nums; }
+.cutbacks { background: var(--surface); border-radius: 10px; padding: 11px 13px; margin-top: 10px; }
+.cutbacks .label {
+  font-size: 0.7rem; text-transform: uppercase; letter-spacing: 0.09em; color: var(--muted); margin-bottom: 6px;
+}
+.cutbacks ul { margin: 0; padding-left: 18px; font-size: 0.86rem; }
+.cutbacks li { margin-bottom: 3px; }
+.cutbacks .short { color: var(--lola); font-size: 0.84rem; margin: 6px 0 0; }
+.place-actions { display: flex; gap: 8px; margin-top: 12px; flex-wrap: wrap; }
+
+/* Income + expense lists */
+.money-col h4 {
+  font-family: "Iowan Old Style", "Palatino Linotype", Palatino, Georgia, serif;
+  font-size: 1.02rem; margin: 0 0 10px; display: flex; align-items: center; gap: 8px;
+}
+.money-row {
+  display: flex; align-items: center; gap: 10px; width: 100%; text-align: left;
+  background: var(--surface-2); border: 1px solid transparent; border-radius: 10px;
+  padding: 11px 13px; margin-bottom: 7px; font-size: 0.9rem;
+}
+.money-row:hover { border-color: var(--shared); }
+.money-row .nm { flex: 1; }
+.money-row .amt { font-variant-numeric: tabular-nums; font-weight: 600; }
+.money-row .tag {
+  font-size: 0.68rem; text-transform: uppercase; letter-spacing: 0.06em;
+  padding: 2px 8px; border-radius: 999px; background: var(--surface); color: var(--muted);
+}
+.money-row .tag.flex { background: var(--ollie-soft); color: var(--ollie); }
+.money-row .tag.gone { background: var(--shared-soft); color: var(--shared); }
+.money-total {
+  display: flex; justify-content: space-between; font-size: 0.9rem; font-weight: 600;
+  padding: 10px 13px; border-top: 1px solid var(--line); margin-top: 4px;
+}
+.money-total span:last-child { font-variant-numeric: tabular-nums; }
+
+/* Dialog extras */
+dialog.tall { max-height: 88vh; overflow-y: auto; max-width: 560px; }
+.dialog-sub {
+  font-family: "Iowan Old Style", "Palatino Linotype", Palatino, Georgia, serif;
+  font-size: 0.95rem; margin: 18px 0 10px; padding-top: 12px; border-top: 1px solid var(--line);
+}
+.dialog-note { font-size: 0.78rem; color: var(--muted); margin: 4px 0 0; }
+.check { display: flex; align-items: center; gap: 9px; font-size: 0.9rem; margin-bottom: 12px; }
+.check input { width: 22px; height: 22px; accent-color: var(--shared); }
+.muted-note { color: var(--muted); font-size: 0.8rem; }
+.stars { display: flex; gap: 6px; }
+.star {
+  border: 1px solid var(--line); background: var(--surface-2); color: var(--muted);
+  width: 44px; height: 44px; border-radius: 10px; font-size: 1.05rem;
+}
+.star.on { background: var(--ollie-soft); border-color: var(--ollie); color: var(--ollie); }
+
 .toast {
   position: fixed; bottom: 24px; left: 50%; transform: translateX(-50%);
   background: var(--ink); color: var(--bg); padding: 12px 24px; border-radius: 999px;
