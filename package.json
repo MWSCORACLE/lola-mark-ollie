@@ -1,24 +1,20 @@
 {
-  "name": "bedside-espanol",
-  "version": "1.0.0",
-  "description": "Duolingo-style Spanish practice for nurses (iOS app)",
+  "name": "lola-mark-ollie",
+  "version": "0.1.0",
+  "description": "Local-first shared calendar and daily-connection app for the kitchen tablet",
+  "private": true,
+  "type": "module",
+  "main": "src/server.js",
   "scripts": {
-    "ios:add": "npx cap add ios",
-    "ios:sync": "npx cap sync ios",
-    "ios:open": "npx cap open ios",
-    "web": "npx serve www"
+    "start": "node src/server.js",
+    "mcp": "node mcp/mcp-server.js"
   },
-  "keywords": [],
-  "author": "",
-  "license": "ISC",
   "dependencies": {
-    "@capacitor/cli": "^8.5.3",
-    "@capacitor/core": "^8.5.3",
-    "@capacitor/haptics": "^8.0.2",
-    "@capacitor/ios": "^8.5.3",
-    "@capacitor/preferences": "^8.0.1",
-    "@capacitor/splash-screen": "^8.0.2",
-    "@capacitor/status-bar": "^8.0.4"
-  },
-  "private": true
+    "@anthropic-ai/sdk": "^0.112.0",
+    "@modelcontextprotocol/sdk": "^1.12.0",
+    "better-sqlite3": "^12.2.0",
+    "express": "^4.21.0",
+    "zod": "^3.24.0"
+  }
 }
+
