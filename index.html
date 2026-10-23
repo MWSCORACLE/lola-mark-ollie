@@ -1,0 +1,1231 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Bedside Español</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Nunito:wght@600;700;800;900&display=swap" rel="stylesheet">
+<style>
+:root{
+  box-sizing:border-box;
+  padding-top:env(safe-area-inset-top,0px);
+  padding-bottom:env(safe-area-inset-bottom,0px);
+  --vp-narrow:375px;--vp-medium:768px;--vp-wide:1280px;
+  --bg:#FFFFFF;--soft:#F7F7F7;--text:#3C3C3C;--muted:#6E6E6E;--line:#E5E5E5;
+  --lock:#E5E5E5;--lock-d:#CECECE;--hint:#AFAFAF;
+  --green:#58CC02;--green-l:#D7FFB8;--green-t:#3F7D00;
+  --red-l:#FFDFE0;--red-t:#B71C1C;
+  --blue:#1CB0F6;--blue-l:#DDF4FF;--blue-t:#0F6E9C;
+  --tip-bg:#FFF4CC;--tip-tx:#5B4500;
+  --orange-t:#C46A00;
+  --focus:#1899D6;
+  --overlay:rgba(0,0,0,.45);
+}
+@media (prefers-color-scheme:dark){
+  :root:not([data-theme="light"]){
+    --bg:#131F24;--soft:#1B2A31;--text:#E8F1F5;--muted:#A7B6BE;--line:#37464F;
+    --lock:#37464F;--lock-d:#26333A;--hint:#6B7D87;
+    --green-l:#1D3A0E;--green-t:#8FE02A;--red-l:#3F1D20;--red-t:#FF9A9A;
+    --blue-l:#10303F;--blue-t:#6CCBF5;--tip-bg:#3A3112;--tip-tx:#FFE08A;
+    --orange-t:#FFB347;--focus:#6CCBF5;--overlay:rgba(0,0,0,.65);
+  }
+}
+:root[data-theme="dark"]{
+  --bg:#131F24;--soft:#1B2A31;--text:#E8F1F5;--muted:#A7B6BE;--line:#37464F;
+  --lock:#37464F;--lock-d:#26333A;--hint:#6B7D87;
+  --green-l:#1D3A0E;--green-t:#8FE02A;--red-l:#3F1D20;--red-t:#FF9A9A;
+  --blue-l:#10303F;--blue-t:#6CCBF5;--tip-bg:#3A3112;--tip-tx:#FFE08A;
+  --orange-t:#FFB347;--focus:#6CCBF5;--overlay:rgba(0,0,0,.65);
+}
+*,*::before,*::after{box-sizing:border-box}
+html{scroll-padding-top:env(safe-area-inset-top,0px);-webkit-text-size-adjust:100%;height:100%}
+body{margin:0;min-height:100%;background:var(--bg);color:var(--text);
+  font-family:"Nunito","Avenir Next Rounded",ui-rounded,system-ui,-apple-system,"Segoe UI",sans-serif;
+  font-weight:700;font-size:17px;line-height:1.35}
+button,input,textarea{font:inherit;color:inherit}
+button{cursor:pointer;-webkit-tap-highlight-color:transparent}
+h1,h2,h3,p{margin:0}
+.sr{position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0);white-space:nowrap}
+:focus{outline:none}
+:focus-visible{outline:3px solid var(--focus);outline-offset:2px}
+.skip{position:fixed;left:12px;top:-60px;z-index:100;background:var(--bg);border:2px solid var(--focus);border-radius:12px;padding:10px 14px;color:var(--text)}
+.skip:focus{top:calc(env(safe-area-inset-top,0px) + 8px)}
+.ic{width:24px;height:24px;flex:none;display:block}
+
+/* ---------- shell ---------- */
+.app{width:100%;min-height:100vh}
+.stage{min-height:100vh;padding-bottom:calc(88px + env(safe-area-inset-bottom,0px))}
+main.page{width:100%;max-width:560px;margin-inline:auto;padding:0 16px 32px}
+.topbar{position:sticky;top:0;z-index:10;background:var(--bg);border-bottom:2px solid var(--line)}
+.top-in{max-width:560px;margin:0 auto;padding:10px 16px;display:flex;align-items:center;justify-content:space-between;gap:12px}
+.lang{display:flex;align-items:center;gap:10px;font-weight:900;font-size:17px}
+.lang-badge{width:36px;height:36px;border-radius:50%;background:var(--blue-l);border:2px solid var(--blue);color:var(--blue-t);display:grid;place-items:center;font-size:13px;font-weight:900}
+.stats{display:flex;gap:18px}
+.stat{display:flex;align-items:center;gap:6px;font-weight:900;font-size:18px;min-height:44px}
+.stat .ic{width:26px;height:26px}
+.s-fire b{color:var(--orange-t)}
+.s-xp b{color:var(--blue-t)}
+
+.nav{position:fixed;left:0;right:0;bottom:0;z-index:20;display:flex;justify-content:space-around;gap:4px;
+  background:var(--bg);border-top:2px solid var(--line);padding:6px 8px calc(6px + env(safe-area-inset-bottom,0px))}
+.nav .brand{display:none}
+.nav button{flex:1;max-width:120px;min-height:56px;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:2px;
+  background:transparent;border:2px solid transparent;border-radius:14px;color:var(--muted);font-size:12px;font-weight:800}
+.nav button .ic{width:28px;height:28px}
+.nav button[aria-current="page"]{background:var(--blue-l);border-color:var(--blue);color:var(--blue-t)}
+@media (min-width:768px){
+  .nav{top:0;bottom:0;right:auto;width:240px;flex-direction:column;justify-content:flex-start;gap:6px;
+    border-top:0;border-right:2px solid var(--line);padding:24px 14px}
+  .nav .brand{display:block;font-size:30px;font-weight:900;color:var(--green);letter-spacing:-.01em;padding:0 14px 18px;line-height:1.05}
+  .nav button{flex:none;max-width:none;width:100%;flex-direction:row;justify-content:flex-start;gap:16px;padding:0 14px;
+    font-size:15px;letter-spacing:.06em;text-transform:uppercase}
+  .stage{margin-left:240px;padding-bottom:40px}
+}
+
+/* ---------- buttons ---------- */
+.btn{--b:#46A302;--bs:#2F7A00;display:inline-flex;align-items:center;justify-content:center;gap:8px;min-height:52px;padding:14px 22px;
+  border:0;border-radius:16px;background:var(--b);color:#fff;box-shadow:0 4px 0 var(--bs);
+  font-weight:900;font-size:16px;letter-spacing:.06em;text-transform:uppercase}
+.btn:hover{filter:brightness(1.07)}
+.btn:active{transform:translateY(4px);box-shadow:0 0 0 var(--bs)}
+.btn[disabled]{background:var(--lock);color:var(--hint);box-shadow:none;cursor:not-allowed;filter:none;transform:none}
+.btn-blue{--b:#1899D6;--bs:#12749F}
+.btn-red{--b:#EA2B2B;--bs:#B71C1C}
+.btn-ghost{background:var(--bg);color:var(--muted);border:2px solid var(--line);box-shadow:0 4px 0 var(--line)}
+.btn-ghost:active{box-shadow:0 0 0 var(--line)}
+.btn-danger-o{background:var(--bg);color:var(--red-t);border:2px solid var(--line);box-shadow:0 4px 0 var(--line)}
+.btn-sm{min-height:44px;padding:10px 16px;font-size:14px}
+.spk{width:48px;height:48px;flex:none;display:grid;place-items:center;border:0;border-radius:14px;background:#1899D6;color:#fff;box-shadow:0 4px 0 #12749F}
+.spk:active{transform:translateY(4px);box-shadow:0 0 0 #12749F}
+.spk .ic{width:26px;height:26px}
+.slow{min-height:44px;padding:0 12px;border-radius:14px;border:2px solid var(--line);background:var(--bg);color:var(--blue-t);font-weight:900;font-size:14px}
+
+/* ---------- learn path ---------- */
+.unit{--ub:#46A302;--ubs:#2F7A00;--u:#58CC02;--ud:#46A302}
+.unit.blue{--ub:#1899D6;--ubs:#12749F;--u:#1CB0F6;--ud:#1899D6}
+.unit.purple{--ub:#A560E8;--ubs:#7D3FBF;--u:#CE82FF;--ud:#A560E8}
+.banner{margin-top:20px;display:flex;align-items:center;justify-content:space-between;gap:12px;
+  background:var(--ub);color:#fff;border-radius:18px;padding:16px 14px 16px 20px;box-shadow:0 4px 0 var(--ubs)}
+.kicker{font-size:15px;font-weight:800}
+.banner h2{font-size:22px;font-weight:900;line-height:1.15;margin-top:2px}
+.ban-sub{font-size:15px;font-weight:700;margin-top:4px}
+.btn-g{min-height:48px;display:inline-flex;align-items:center;gap:8px;padding:0 14px;border:0;border-radius:14px;
+  background:var(--ubs);color:#fff;font-weight:900;font-size:15px;box-shadow:0 3px 0 rgba(0,0,0,.28)}
+.btn-g:active{transform:translateY(3px);box-shadow:none}
+.btn-g .ic{width:22px;height:22px}
+.path{list-style:none;margin:0;padding:8px 0 12px}
+.step{display:flex;flex-direction:column;align-items:center;margin:20px 0}
+.step.cur{margin-top:60px}
+.step-body{transform:translateX(var(--dx));display:flex;flex-direction:column;align-items:center;position:relative}
+.node{width:80px;height:72px;border:0;border-radius:50%;background:var(--u);color:#fff;box-shadow:0 8px 0 var(--ud);
+  display:grid;place-items:center;position:relative}
+.node:active{transform:translateY(6px);box-shadow:0 2px 0 var(--ud)}
+.node .ic{width:36px;height:36px}
+.node.done{background:#FFC800;box-shadow:0 8px 0 #E5A400}
+.node.done:active{box-shadow:0 2px 0 #E5A400}
+.node.locked{background:var(--lock);box-shadow:0 8px 0 var(--lock-d);color:var(--hint)}
+.node.locked:active{box-shadow:0 2px 0 var(--lock-d)}
+.step-label{display:block;margin-top:18px;max-width:150px;text-align:center;font-size:14px;font-weight:800;color:var(--muted);line-height:1.2}
+.bubble{position:absolute;top:-50px;left:50%;transform:translateX(-50%);background:var(--bg);border:2px solid var(--line);
+  border-radius:12px;padding:6px 14px;color:var(--ub);font-weight:900;font-size:14px;letter-spacing:.06em;text-transform:uppercase;
+  animation:bob 1.6s ease-in-out infinite;pointer-events:none}
+.bubble::after{content:"";position:absolute;left:50%;bottom:-8px;width:12px;height:12px;background:var(--bg);
+  border-right:2px solid var(--line);border-bottom:2px solid var(--line);transform:translateX(-50%) rotate(45deg)}
+@keyframes bob{0%,100%{transform:translateX(-50%) translateY(0)}50%{transform:translateX(-50%) translateY(-6px)}}
+.pop{width:min(320px,100%);margin:18px auto 0;border-radius:18px;padding:16px;text-align:center;background:var(--ub);color:#fff;animation:rise .18s ease-out}
+.pop[hidden]{display:none}
+.pop.locked{background:var(--lock);color:var(--muted)}
+.pop-t{font-size:20px;font-weight:900;line-height:1.15}
+.pop-s{font-size:15px;font-weight:700;margin-top:4px}
+.pop .btn{width:100%;margin-top:14px;background:#fff;color:var(--ub);box-shadow:0 4px 0 rgba(0,0,0,.28)}
+.pop .btn[disabled]{background:var(--soft);color:var(--hint);box-shadow:none}
+@keyframes rise{from{opacity:0;transform:translateY(8px)}to{opacity:1;transform:none}}
+
+/* ---------- glossary / profile / shared page bits ---------- */
+.h1{font-size:28px;font-weight:900;margin-top:24px}
+.lede{color:var(--muted);margin-top:6px;font-size:16px;max-width:60ch}
+.field{display:block;margin:18px 0 12px}
+.field label{display:block;font-weight:800;font-size:15px;color:var(--muted);margin-bottom:6px}
+.sw{position:relative}
+.sw .ic{position:absolute;left:14px;top:50%;transform:translateY(-50%);width:22px;height:22px;color:var(--hint);pointer-events:none}
+input[type=search]{width:100%;min-height:52px;padding:12px 16px 12px 46px;border:2px solid var(--line);border-radius:14px;background:var(--bg);font-weight:700;font-size:17px}
+input[type=search]:focus-visible{border-color:var(--focus);outline-offset:0}
+.chips{display:flex;gap:8px;overflow-x:auto;padding:4px 2px 12px;-webkit-overflow-scrolling:touch}
+.chip{flex:none;min-height:44px;padding:0 16px;border:2px solid var(--line);border-bottom-width:4px;border-radius:14px;background:var(--bg);color:var(--muted);font-weight:800;font-size:15px;white-space:nowrap}
+.chip[aria-pressed="true"]{border-color:var(--blue);background:var(--blue-l);color:var(--blue-t)}
+.count{color:var(--muted);font-size:15px;margin:2px 0 6px}
+.term{display:flex;align-items:center;gap:14px;padding:12px 0;border-top:2px solid var(--line)}
+.t-es{font-size:19px;font-weight:900;line-height:1.2}
+.t-en{color:var(--muted);font-size:16px;margin-top:2px}
+.empty{text-align:center;padding:36px 8px}
+.empty h2{font-size:21px;font-weight:900}
+.empty p{color:var(--muted);margin:6px 0 18px}
+.cards{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-top:20px}
+.card{border:2px solid var(--line);border-radius:16px;padding:14px;display:flex;flex-direction:column;gap:4px}
+.card .ic{width:30px;height:30px}
+.card b{font-size:24px;font-weight:900}
+.card span{color:var(--muted);font-size:15px}
+.avatar{width:96px;height:96px;border-radius:50%;background:var(--green);color:#fff;display:grid;place-items:center;margin:28px auto 0}
+.avatar .ic{width:54px;height:54px}
+.center{text-align:center}
+.mt{margin-top:24px}
+
+/* ---------- overlays: lesson + guide ---------- */
+.overlay{position:fixed;inset:0;z-index:50;background:var(--bg);display:flex;flex-direction:column;overflow-y:auto}
+.overlay[hidden]{display:none}
+.l-top{position:sticky;top:0;background:var(--bg);z-index:2;padding-top:env(safe-area-inset-top,0px)}
+.l-top-in{max-width:760px;margin:0 auto;padding:14px 16px;display:flex;align-items:center;gap:14px}
+.icon-btn{width:48px;height:48px;flex:none;display:grid;place-items:center;border:0;background:transparent;color:var(--hint);border-radius:14px}
+.icon-btn:hover{color:var(--muted)}
+.icon-btn .ic{width:28px;height:28px}
+.bar{flex:1;height:16px;border-radius:99px;background:var(--lock);overflow:hidden}
+.bar-fill{height:100%;width:0;background:var(--green);border-radius:99px;position:relative;transition:width .35s ease}
+.bar-fill::after{content:"";position:absolute;left:8px;right:8px;top:4px;height:4px;border-radius:99px;background:rgba(255,255,255,.4)}
+.hearts{display:flex;align-items:center;gap:6px;font-weight:900;font-size:19px;color:var(--red-t);min-width:56px;justify-content:flex-end}
+.hearts .ic{width:28px;height:28px}
+.l-body{width:100%;max-width:680px;margin:0 auto;padding:12px 16px 240px;flex:1}
+.q{font-size:26px;font-weight:900;line-height:1.2;margin:8px 0 22px}
+.q:focus{outline:none}
+.prompt{display:flex;align-items:flex-start;gap:14px;margin-bottom:22px}
+.thumb{flex:none;width:116px;height:87px;border-radius:18px;overflow:hidden;background:var(--soft)}
+.thumb svg{display:block;width:100%;height:100%}
+.pbody{flex:1;min-width:0;display:flex;flex-direction:column;gap:10px;align-items:flex-start}
+.audio{display:flex;gap:10px;align-items:center}
+.say-t{position:relative;width:100%;border:2px solid var(--line);border-radius:16px;padding:12px 16px;font-size:20px;font-weight:800;line-height:1.3}
+.say-t::before{content:"";position:absolute;left:-9px;top:26px;width:14px;height:14px;background:var(--bg);border-left:2px solid var(--line);border-bottom:2px solid var(--line);transform:rotate(45deg)}
+.prompt>.audio:only-child{margin-bottom:0}
+.ans{min-height:128px;display:flex;flex-wrap:wrap;align-content:flex-start;gap:8px;padding:10px 0 12px;margin-bottom:26px;
+  background:
+   linear-gradient(var(--line),var(--line)) 0 61px/100% 2px no-repeat,
+   linear-gradient(var(--line),var(--line)) 0 118px/100% 2px no-repeat;
+  border-top:2px solid var(--line)}
+.bank{display:flex;flex-wrap:wrap;justify-content:center;gap:8px}
+.tile{min-height:48px;padding:10px 16px;border:2px solid var(--line);border-bottom-width:4px;border-radius:14px;background:var(--bg);
+  font-weight:800;font-size:18px;color:var(--text)}
+.tile:active{transform:translateY(2px);border-bottom-width:2px}
+.tile.ghost{background:var(--lock);border-color:var(--lock);color:transparent;border-bottom-width:4px;user-select:none}
+.tile[disabled]{cursor:default}
+.opts{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+@media (max-width:420px){.opts{grid-template-columns:1fr}.opts.pics{grid-template-columns:1fr 1fr}}
+.opt.pic{position:relative;flex-direction:column;justify-content:center;gap:8px;min-height:138px;text-align:center}
+.opt.pic .key{position:absolute;top:8px;right:8px}
+.emo{font-size:54px;line-height:1;font-family:"Apple Color Emoji","Segoe UI Emoji","Noto Color Emoji",sans-serif}
+.cap{font-size:15px;font-weight:800;line-height:1.2;color:var(--muted)}
+.opt.pic{min-height:124px}
+/* scenarios */
+.sit{width:100%;border-radius:16px;background:var(--soft);padding:12px 14px;font-size:16px;font-weight:700;line-height:1.35;color:var(--muted)}
+.sit b{color:var(--text);font-weight:900}
+.hint-row{display:flex;flex-wrap:wrap;gap:8px;margin:0 0 16px}
+.hw{min-height:44px;padding:8px 12px;border:2px dashed var(--line);border-radius:12px;background:var(--bg);font-weight:800;font-size:15px;color:var(--muted);text-align:left}
+.hw .hs{display:none;color:var(--blue-t)}
+.hw[aria-pressed="true"]{border-style:solid;border-color:var(--blue);background:var(--blue-l);color:var(--muted)}
+.hw[aria-pressed="true"] .hs{display:inline}
+.hw[aria-pressed="true"] .hs::before{content:" → "}
+.hint-lbl{color:var(--muted);font-size:14px;margin:0 0 8px}
+.typed{width:100%;min-height:112px;padding:14px 16px;border:2px solid var(--line);border-radius:16px;background:var(--bg);font-weight:800;font-size:19px;line-height:1.35;resize:vertical;color:var(--text)}
+.typed:focus-visible{border-color:var(--focus);outline-offset:0}
+.typed[disabled]{background:var(--soft)}
+.reveal-row{display:flex;justify-content:flex-end;margin:12px 0 24px}
+.sc-list{list-style:none;margin:18px 0 0;padding:0}
+.sc{display:flex;align-items:center;gap:14px;padding:12px 0;border-top:2px solid var(--line)}
+.sc .thumb{width:92px;height:69px;border-radius:14px}
+.sc-t{font-size:18px;font-weight:900;line-height:1.2}
+.sc-n{color:var(--muted);font-size:15px;margin-top:2px}
+.sc .btn{margin-left:auto}
+.opt{min-height:84px;padding:14px 16px;border:2px solid var(--line);border-bottom-width:4px;border-radius:16px;background:var(--bg);
+  display:flex;align-items:center;justify-content:space-between;gap:10px;text-align:left;font-weight:800;font-size:19px;line-height:1.2}
+.opt .key{flex:none;width:28px;height:28px;border:2px solid var(--line);border-radius:8px;display:grid;place-items:center;font-size:14px;color:var(--muted)}
+.opt[aria-checked="true"]{border-color:var(--blue);background:var(--blue-l);color:var(--blue-t)}
+.opt[aria-checked="true"] .key{border-color:var(--blue);color:var(--blue-t)}
+.opt.right{border-color:var(--green);background:var(--green-l);color:var(--green-t)}
+.opt.wrong{border-color:#FF4B4B;background:var(--red-l);color:var(--red-t)}
+.opt[disabled]{cursor:default}
+.match{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+.match .col{display:flex;flex-direction:column;gap:12px}
+.match .tile{min-height:60px;font-size:17px;line-height:1.2}
+.tile.sel{border-color:var(--blue);background:var(--blue-l);color:var(--blue-t)}
+.tile.ok{border-color:var(--lock);color:var(--hint);background:var(--bg);opacity:.55}
+.tile.bad{border-color:#FF4B4B;background:var(--red-l);color:var(--red-t)}
+.l-foot{position:fixed;left:0;right:0;bottom:0;z-index:3;background:var(--bg);border-top:2px solid var(--line)}
+.foot-in{max-width:680px;margin:0 auto;padding:16px 16px calc(16px + env(safe-area-inset-bottom,0px));display:flex;gap:12px;justify-content:space-between}
+.foot-in .btn{flex:1}
+@media (min-width:600px){.foot-in .btn{flex:0 0 170px}.foot-in .btn:only-child{margin-left:auto}}
+.fb{animation:rise .2s ease-out}
+.fb.ok{background:var(--green-l);color:var(--green-t)}
+.fb.bad{background:var(--red-l);color:var(--red-t)}
+.fb-in{max-width:680px;margin:0 auto;padding:18px 16px calc(18px + env(safe-area-inset-bottom,0px));display:grid;grid-template-columns:auto 1fr;gap:6px 14px;align-items:center}
+.fb-ico{width:52px;height:52px;border-radius:50%;background:var(--bg);display:grid;place-items:center}
+.fb-ico .ic{width:30px;height:30px}
+.fb.ok .fb-ico{color:var(--green-t)}
+.fb.bad .fb-ico{color:var(--red-t)}
+.fb-t{font-size:22px;font-weight:900;line-height:1.1}
+.fb-a{font-size:17px;font-weight:700;margin-top:4px}
+.fb .btn{grid-column:1/-1;margin-top:10px;width:100%}
+@media (min-width:600px){.fb-in{grid-template-columns:auto 1fr 190px}.fb .btn{grid-column:auto;margin-top:0}}
+.done-wrap{text-align:center;padding-top:28px}
+.badge{width:132px;height:132px;border-radius:50%;background:#FFC800;box-shadow:0 8px 0 #E5A400;color:#fff;display:grid;place-items:center;margin:0 auto 26px}
+.badge .ic{width:72px;height:72px}
+.done-wrap h1{font-size:30px;font-weight:900}
+.done-wrap .sub{color:var(--muted);margin-top:6px}
+.stats3{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;margin:28px 0 0}
+.st{border-radius:16px;border:2px solid var(--c);overflow:hidden;background:var(--bg)}
+.st-h{display:block;background:var(--c);color:var(--ct);font-size:14px;font-weight:900;padding:6px 4px}
+.st-v{display:flex;align-items:center;justify-content:center;gap:6px;min-height:64px;font-size:24px;font-weight:900;color:var(--c2)}
+.st-v .ic{width:24px;height:24px}
+.st.xp{--c:#E5A400;--ct:#4A3600;--c2:#8A5E00}
+.st.acc{--c:#46A302;--ct:#fff;--c2:var(--green-t)}
+.st.time{--c:#1899D6;--ct:#fff;--c2:var(--blue-t)}
+.streak-note{display:flex;align-items:center;justify-content:center;gap:10px;margin-top:22px;font-weight:900;font-size:19px;color:var(--orange-t)}
+.streak-note .ic{width:30px;height:30px}
+.sad-heart{width:96px;height:96px;margin:0 auto 22px}
+.sad-heart .ic{width:96px;height:96px}
+
+/* ---------- guidebook ---------- */
+.g-wrap{width:100%;max-width:680px;margin:0 auto;padding:4px 16px 48px}
+.seg{display:flex;gap:8px;margin:6px 0 20px}
+.seg button{flex:1;min-height:48px;border:2px solid var(--line);border-bottom-width:4px;border-radius:14px;background:var(--bg);color:var(--muted);font-weight:900;font-size:15px}
+.seg button[aria-selected="true"]{border-color:var(--blue);background:var(--blue-l);color:var(--blue-t)}
+.g-intro{font-size:19px;line-height:1.4}
+.tip{margin-top:16px;padding:14px 16px;border-radius:16px;background:var(--tip-bg);color:var(--tip-tx);border:2px solid #FFC800;font-size:17px;line-height:1.4}
+.tip b{font-weight:900}
+.tbl-wrap{margin-top:18px;overflow-x:auto}
+table.vt{width:100%;border-collapse:separate;border-spacing:0;border:2px solid var(--line);border-radius:16px;overflow:hidden;font-size:16px}
+.vt th,.vt td{padding:10px 12px;text-align:left}
+.vt th{background:var(--soft);color:var(--muted);font-size:14px;font-weight:800}
+.vt td{border-top:2px solid var(--line);font-weight:800}
+.vt td:first-child{color:var(--muted);font-weight:700}
+.h3{font-size:20px;font-weight:900;margin:26px 0 4px}
+
+/* ---------- dialog + toast ---------- */
+dialog{width:min(380px,calc(100% - 32px));border:2px solid var(--line);border-radius:22px;padding:24px;background:var(--bg);color:var(--text)}
+dialog::backdrop{background:var(--overlay)}
+dialog h2{font-size:22px;font-weight:900}
+dialog p{color:var(--muted);margin-top:8px}
+.dlg-btns{display:flex;flex-direction:column;gap:12px;margin-top:22px}
+.toast{position:fixed;left:50%;bottom:calc(110px + env(safe-area-inset-bottom,0px));transform:translateX(-50%);z-index:90;max-width:calc(100% - 32px);
+  background:var(--text);color:var(--bg);padding:12px 18px;border-radius:14px;font-weight:800;font-size:15px;text-align:center}
+.toast[hidden]{display:none}
+
+/* speaking */
+.mic-wrap{display:flex;flex-direction:column;align-items:center;gap:16px;margin:30px 0 10px}
+.mic{width:108px;height:108px;border-radius:50%;border:0;background:#1899D6;color:#fff;box-shadow:0 7px 0 #12749F;display:grid;place-items:center;position:relative}
+.mic:active{transform:translateY(5px);box-shadow:0 2px 0 #12749F}
+.mic .ic{width:50px;height:50px}
+.mic.on{background:#EA2B2B;box-shadow:0 7px 0 #B71C1C}
+.mic.on::after{content:"";position:absolute;inset:-10px;border-radius:50%;border:4px solid #EA2B2B;opacity:.5;animation:pulse 1.2s ease-out infinite}
+.mic[disabled]{background:var(--lock);box-shadow:0 7px 0 var(--lock-d);color:var(--hint);cursor:default}
+@keyframes pulse{from{transform:scale(.9);opacity:.6}to{transform:scale(1.25);opacity:0}}
+.mic-state{font-weight:900;font-size:19px}
+.heard{min-height:52px;text-align:center;color:var(--muted);font-size:17px;max-width:44ch;margin:0 auto}
+.mic-note{color:var(--muted);font-size:14px;text-align:center;max-width:40ch;margin:14px auto 0}
+.blank-sentence{font-size:25px;font-weight:800;line-height:1.6;margin:4px 0 0}
+.blank{display:inline-block;min-width:104px;border-bottom:4px solid var(--blue);margin:0 2px 0 6px;height:1em;vertical-align:baseline}
+.pop-top{display:flex;align-items:center;gap:14px;text-align:left}
+.pop-top .thumb{width:104px;height:78px;border-radius:16px;background:#fff}
+.icon-btn.accent{color:var(--blue-t)}
+.top-r{display:flex;align-items:center;gap:6px}
+.switch{display:flex;align-items:center;justify-content:space-between;gap:16px;padding:16px 0;border-top:2px solid var(--line);margin-top:26px}
+.switch label{flex:1}
+.sw-t{display:block;font-weight:900;font-size:18px}
+.sw-n{display:block;color:var(--muted);font-size:15px;margin-top:2px}
+.switch input{width:32px;height:32px;accent-color:#46A302;flex:none}
+/* quick glossary sheet */
+#qg{padding:0;width:min(520px,calc(100% - 24px));max-height:min(80vh,680px)}
+#qg[open]{display:flex;flex-direction:column}
+.qg-head{display:flex;align-items:center;justify-content:space-between;padding:14px 12px 0 22px}
+.qg-head h2{font-size:22px;font-weight:900}
+.qg-body{padding:0 22px}
+.qg-count{padding:0 22px;margin:0 0 4px}
+.qg-list{overflow-y:auto;padding:0 22px 12px;flex:1;min-height:140px}
+.qg-foot{padding:12px 22px calc(16px + env(safe-area-inset-bottom,0px));border-top:2px solid var(--line)}
+@media (max-width:600px){#qg{width:100%;max-width:none;margin:auto 0 0;border-radius:22px 22px 0 0;border-bottom:0}}
+
+@media (prefers-reduced-motion:reduce){
+  .mic.on::after{animation:none;opacity:.5;transform:none}
+  .bubble{animation:none}
+  .pop,.fb{animation:none}
+  .bar-fill{transition:none}
+  .btn:active,.spk:active,.node:active,.tile:active,.btn-g:active,.mic:active{transform:none}
+}
+</style>
+</head>
+<body>
+<a class="skip" href="#main">Skip to main content</a>
+
+<div class="app" id="app">
+  <nav class="nav" aria-label="Main">
+    <p class="brand" aria-hidden="true">bedside<br>español</p>
+    <button type="button" data-tab="learn" aria-current="page"></button>
+    <button type="button" data-tab="scenarios"></button>
+    <button type="button" data-tab="glossary"></button>
+    <button type="button" data-tab="profile"></button>
+  </nav>
+  <div class="stage">
+    <header class="topbar" id="top"></header>
+    <main id="main" class="page" tabindex="-1"></main>
+  </div>
+</div>
+
+<div class="overlay" id="lesson" role="dialog" aria-modal="true" aria-label="Lesson" hidden>
+  <div class="l-top"><div class="l-top-in">
+    <button type="button" class="icon-btn" id="l-close" aria-label="Quit lesson"></button>
+    <div class="bar" id="l-bar" role="progressbar" aria-label="Lesson progress" aria-valuemin="0" aria-valuemax="12" aria-valuenow="0"><div class="bar-fill" id="l-fill"></div></div>
+    <button type="button" class="icon-btn accent" id="l-gloss" data-act="qg" aria-label="Open quick glossary"></button>
+    <div class="hearts" id="l-hearts"></div>
+  </div></div>
+  <div class="l-body" id="l-body"></div>
+  <div class="l-foot" id="l-foot"></div>
+</div>
+
+<div class="overlay" id="guide" role="dialog" aria-modal="true" aria-label="Guidebook" hidden>
+  <div class="l-top"><div class="l-top-in">
+    <button type="button" class="icon-btn" id="g-close" aria-label="Close guidebook"></button>
+    <h2 id="g-title" style="font-size:22px;font-weight:900"></h2>
+  </div></div>
+  <div class="g-wrap" id="g-body"></div>
+</div>
+
+<dialog id="dlg"></dialog>
+<dialog id="qg" aria-labelledby="qg-title"></dialog>
+<div class="toast" id="toast" role="status" aria-live="polite" hidden></div>
+
+<script src="native.js"></script>
+<script>
+(()=>{
+'use strict';
+
+/* ================= helpers ================= */
+const $=(s,r=document)=>r.querySelector(s);
+const $$=(s,r=document)=>Array.from(r.querySelectorAll(s));
+const esc=s=>String(s).replace(/[&<>"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));
+const shuffle=a=>{a=a.slice();for(let i=a.length-1;i>0;i--){const j=Math.floor(Math.random()*(i+1));[a[i],a[j]]=[a[j],a[i]]}return a};
+const pick=a=>a[Math.floor(Math.random()*a.length)];
+const norm=s=>s.toLowerCase().replace(/[¿?¡!.,]/g,'').replace(/\s+/g,' ').trim();
+const plain=s=>s.normalize('NFD').replace(/[\u0300-\u036f]/g,'').toLowerCase();
+const reduced=()=>window.matchMedia&&matchMedia('(prefers-reduced-motion: reduce)').matches;
+
+const ICON={
+  flame:'<path fill="#FF9600" d="M12 2C12 2 5 8 5 14a7 7 0 0 0 14 0c0-3-2-5-3-6-.5 2-1.5 3-3 3 1-3 0-6-1-9z"/><path fill="#FFC800" d="M12 22a3.5 3.5 0 0 1-3.5-3.5c0-2 2-3.5 3.5-5.5 1.5 2 3.5 3.5 3.5 5.5A3.5 3.5 0 0 1 12 22z"/>',
+  bolt:'<path fill="#1CB0F6" d="M13 2 4 14h6l-1 8 9-12h-6z"/>',
+  heart:'<path fill="#FF4B4B" d="M12 21s-7.5-4.6-9.5-9.3C1 8 3.2 4.5 6.6 4.5c2 0 3.6 1.1 5.4 3 1.8-1.9 3.4-3 5.4-3 3.4 0 5.6 3.5 4.1 7.2C19.5 16.4 12 21 12 21z"/>',
+  check:'<path d="M5 12.5l4.5 4.5L19 7.5" fill="none" stroke="currentColor" stroke-width="3.5" stroke-linecap="round" stroke-linejoin="round"/>',
+  x:'<path d="M6 6l12 12M18 6L6 18" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round"/>',
+  star:'<path fill="currentColor" d="M12 2.5l2.9 6 6.6.9-4.8 4.6 1.2 6.5L12 17.4 6.1 20.5l1.2-6.5L2.5 9.4l6.6-.9z"/>',
+  lock:'<rect x="5" y="11" width="14" height="10" rx="2.5" fill="currentColor"/><path d="M8 11V8a4 4 0 0 1 8 0v3" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round"/>',
+  speaker:'<path fill="currentColor" d="M4 9v6h4l5 4V5L8 9z"/><path d="M16 8.5a5 5 0 0 1 0 7M18.6 5.8a8.8 8.8 0 0 1 0 12.4" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round"/>',
+  book:'<path d="M5 4.5A1.5 1.5 0 0 1 6.5 3H19v15H6.5A1.5 1.5 0 0 0 5 19.5z" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linejoin="round"/><path d="M5 19.5A1.5 1.5 0 0 0 6.5 21H19v-3" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linejoin="round"/>',
+  learn:'<path fill="currentColor" d="M3 11.5 12 3l9 8.5V20a1 1 0 0 1-1 1h-5v-6H9v6H4a1 1 0 0 1-1-1z"/>',
+  list:'<circle cx="5" cy="7" r="1.8" fill="currentColor"/><circle cx="5" cy="12" r="1.8" fill="currentColor"/><circle cx="5" cy="17" r="1.8" fill="currentColor"/><path d="M10 7h10M10 12h10M10 17h10" stroke="currentColor" stroke-width="2.6" stroke-linecap="round"/>',
+  user:'<circle cx="12" cy="8" r="4.2" fill="currentColor"/><path fill="currentColor" d="M3.5 21a8.5 8.5 0 0 1 17 0z"/>',
+  search:'<circle cx="10.5" cy="10.5" r="6" fill="none" stroke="currentColor" stroke-width="2.8"/><path d="M15.5 15.5 21 21" stroke="currentColor" stroke-width="2.8" stroke-linecap="round"/>',
+  back:'<path d="M15 5l-7 7 7 7" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/>',
+  broken:'<path fill="#FF4B4B" d="M12 21s-7.5-4.6-9.5-9.3C1 8 3.2 4.5 6.6 4.5c2 0 3.6 1.1 5.4 3L10 11l3 2-2 4z"/><path fill="#EA2B2B" d="M12 7.5c1.8-1.9 3.4-3 5.4-3 3.4 0 5.6 3.5 4.1 7.2C19.5 16.4 12 21 12 21l1-4-3-2 2-3z" opacity=".85"/>'
+};
+ICON.chat='<path fill="currentColor" d="M4 4h12a2 2 0 0 1 2 2v7a2 2 0 0 1-2 2H9l-4 3v-3H4a2 2 0 0 1-2-2V6a2 2 0 0 1 2-2z"/><path fill="currentColor" opacity=".55" d="M20 9h1a2 2 0 0 1 2 2v6a2 2 0 0 1-2 2h-1v3l-4-3h-5a2 2 0 0 1-2-2v-1h6a4 4 0 0 0 4-4z"/>';
+ICON.mic='<rect x="9" y="3" width="6" height="12" rx="3" fill="currentColor"/><path d="M5.5 11.5a6.5 6.5 0 0 0 13 0M12 18v3" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round"/>';
+const ic=(n,c='')=>'<svg class="ic '+c+'" viewBox="0 0 24 24" aria-hidden="true" focusable="false">'+ICON[n]+'</svg>';
+
+/* ================= pictures ================= */
+const PIC={
+ "la enfermera":"👩‍⚕️","el médico":"👨‍⚕️","hola":"👋","gracias":"🙏","el paciente":"🛌",
+ "la casa":"🏠","el intérprete":"🗣️","la alergia":"🤧","el trabajo":"💼","la edad":"🎂",
+ "la madre":"👩","el padre":"👨","la hija":"👧","el hijo":"👦","la familia":"👨‍👩‍👧‍👦","la sala de espera":"🪑",
+ "la cirugía":"🏥","el piso":"🏢","aprender":"📚","despacio":"🐢","repetir":"🔁",
+ "la emergencia":"🚨","la fecha de nacimiento":"🎂","el número de teléfono":"📞","el consentimiento":"✍️","el historial médico":"📋",
+ "la herida":"🤕","el vendaje":"🩹","la fiebre":"🤒","la cita":"📅","los puntos":"🪡","las instrucciones":"📝","el descanso":"😴","bañarse":"🛁",
+ "el dolor":"😣","el ardor":"🔥","el alivio":"😌","fuerte":"💪","la escala":"📏",
+ "la pastilla":"💊","la inyección":"💉","la náusea":"🤢","el mareo":"😵‍💫","con comida":"🍽️",
+ "la presión arterial":"🩺","la temperatura":"🌡️","el pulso":"💓","la respiración":"🫁","el brazo":"💪","el dedo":"☝️","la frecuencia cardíaca":"📈",
+ "el agua":"💧","la comida":"🍽️","el desayuno":"🍳","el almuerzo":"🥪","la cena":"🍲","el hambre":"😋","la sed":"🥤",
+ "el baño":"🚻","el inodoro":"🚽","el botón de llamada":"🔔"
+};
+const PICPOOL=Object.entries(PIC);
+/* flat illustration scenes, one per lesson */
+const TINT={u1:['#D7FFB8','#AEE67A'],u2:['#DDF4FF','#A9DDF7'],u3:['#F3E5FF','#DCC0F7']};
+const SKIN='#F2C29B',SKIN2='#B9794F',SKIN3='#DDA277',HAIR='#4B3A32',SCRUB='#1CB0F6';
+const sv=(u,inner,after)=>'<svg viewBox="0 0 160 120" role="img" aria-hidden="true" focusable="false"><rect width="160" height="120" fill="'+TINT[u][0]+'"/>'+inner+'<rect y="100" width="160" height="20" fill="'+TINT[u][1]+'"/>'+(after||'')+'</svg>';
+const POSE={down:[[-13,-12,-17,8],[13,-12,17,8]],wave:[[-13,-12,-17,8],[13,-12,23,-27]],hold:[[-13,-12,-7,3],[13,-12,7,3]],point:[[-13,-12,-17,8],[13,-12,33,-8]]};
+const nurse=(x,y,sc,pose,extra)=>{
+  const arms=POSE[pose||'down'];
+  return '<g transform="translate('+x+' '+y+') scale('+sc+')"><rect x="-16" y="-22" width="32" height="48" rx="12" fill="'+SCRUB+'"/><path d="M-7 -22L0 -9L7 -22z" fill="#fff"/>'+
+   '<g stroke="'+SCRUB+'" stroke-width="9" stroke-linecap="round">'+arms.map(r=>'<path d="M'+r[0]+' '+r[1]+'L'+r[2]+' '+r[3]+'"/>').join('')+'</g>'+
+   arms.map(r=>'<circle cx="'+r[2]+'" cy="'+r[3]+'" r="5" fill="'+SKIN+'"/>').join('')+(extra||'')+
+   '<circle cx="0" cy="-35" r="12" fill="'+SKIN+'"/><path d="M-12 -36a12 12 0 0 1 24 0c-5-6-17-8-24 0z" fill="'+HAIR+'"/><circle cx="0" cy="-49" r="5.5" fill="'+HAIR+'"/>'+
+   '<circle cx="-4" cy="-34" r="1.6" fill="#3C3C3C"/><circle cx="4" cy="-34" r="1.6" fill="#3C3C3C"/><path d="M-3 -29q3 3 6 0" fill="none" stroke="#B5543F" stroke-width="1.6" stroke-linecap="round"/></g>';
+};
+const person=(x,col,skin,sc)=>'<g transform="translate('+x+' 102) scale('+sc+')"><rect x="-11" y="-40" width="22" height="44" rx="9" fill="'+col+'"/><circle cx="0" cy="-50" r="9" fill="'+skin+'"/><path d="M-9 -51a9 9 0 0 1 18 0c-4-4-13-5-18 0z" fill="'+HAIR+'"/></g>';
+const bub=(x,y,w,h,t,c)=>'<rect x="'+x+'" y="'+y+'" width="'+w+'" height="'+h+'" rx="12" fill="#fff"/><path d="M'+(x+10)+' '+(y+h-1)+'l-5 10 15-10z" fill="#fff"/><text x="'+(x+w/2)+'" y="'+(y+h/2+5)+'" text-anchor="middle" font-family="Nunito,system-ui,sans-serif" font-weight="900" font-size="14" fill="'+c+'">'+t+'</text>';
+const lbl=(x,y,t,c)=>'<text x="'+x+'" y="'+y+'" text-anchor="middle" font-family="Nunito,system-ui,sans-serif" font-weight="900" font-size="14" fill="'+c+'">'+t+'</text>';
+const clock=(cx,cy,r)=>'<circle cx="'+cx+'" cy="'+cy+'" r="'+r+'" fill="#fff" stroke="#1CB0F6" stroke-width="5"/>'+[[0,-1],[1,0],[0,1],[-1,0]].map(d=>'<path d="M'+(cx+d[0]*(r-9))+' '+(cy+d[1]*(r-9))+'L'+(cx+d[0]*(r-4))+' '+(cy+d[1]*(r-4))+'" stroke="#AFAFAF" stroke-width="2.5" stroke-linecap="round"/>').join('')+
+  '<path d="M'+cx+' '+cy+'L'+cx+' '+(cy-r*.62)+'M'+cx+' '+cy+'L'+(cx+r*.42)+' '+(cy+r*.14)+'" stroke="#3C3C3C" stroke-width="3.5" stroke-linecap="round"/><circle cx="'+cx+'" cy="'+cy+'" r="3" fill="#3C3C3C"/>';
+const cal=(x,y)=>'<rect x="'+x+'" y="'+y+'" width="52" height="58" rx="8" fill="#fff"/><path d="M'+x+' '+(y+8)+'a8 8 0 0 1 8-8h36a8 8 0 0 1 8 8v8h-52z" fill="#FF4B4B"/>'+
+  [0,1,2].flatMap(r=>[0,1,2,3].map(c=>'<circle cx="'+(x+11+c*10)+'" cy="'+(y+28+r*11)+'" r="2.8" fill="'+(r===1&&c===2?'#1CB0F6':'#D5D5D5')+'"/>')).join('');
+const star=(cx,cy,R,r,n)=>{let d='';for(let i=0;i<n*2;i++){const a=Math.PI*i/n-Math.PI/2,rr=i%2?r:R;d+=(i?'L':'M')+(cx+Math.cos(a)*rr).toFixed(1)+' '+(cy+Math.sin(a)*rr).toFixed(1)}return d+'z'};
+const STETH='<path d="M-7 -22q-5 24 7 24t7-24" fill="none" stroke="#3C3C3C" stroke-width="2.4"/><circle cx="0" cy="3" r="3.4" fill="#8E8E8E"/>';
+const SCENES={
+ meet:()=>sv('u1',nurse(62,84,1.15,'wave')+bub(100,14,54,30,'¡Hola!','#46A302')),
+ background:()=>sv('u1',nurse(46,84,1.1,'point')+'<rect x="88" y="24" width="52" height="68" rx="7" fill="#fff" stroke="#C48A4A" stroke-width="3"/><rect x="104" y="19" width="20" height="10" rx="3" fill="#8E8E8E"/>'+
+   [40,53,66,79].map(y=>'<path d="M97 '+y+'l3 3 5-6" fill="none" stroke="#58CC02" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/><path d="M111 '+y+'h22" stroke="#C4C4C4" stroke-width="3.5" stroke-linecap="round"/>').join('')),
+ family:()=>sv('u1',nurse(38,84,1,'wave')+person(88,'#FF9600',SKIN3,1)+person(113,'#CE82FF',SKIN2,1)+person(138,'#FFC800',SKIN,.72)),
+ aboutme:()=>sv('u1',nurse(80,84,1.2,'down','<rect x="3" y="-12" width="11" height="9" rx="2" fill="#fff"/><path d="M8.5 -10.5v6M5.5 -7.5h6" stroke="#EA2B2B" stroke-width="2" stroke-linecap="round"/>')+bub(6,10,46,28,'Hi!','#1899D6')+bub(106,10,50,28,'¡Hola!','#46A302')),
+ present:()=>sv('u2',nurse(44,84,1.1,'point')+clock(116,52,29),lbl(116,116,'ahora','#0F6E9C')),
+ past:()=>sv('u2','<path d="M30 60h38M44 46l-16 14 16 14" fill="none" stroke="#1899D6" stroke-width="8" stroke-linecap="round" stroke-linejoin="round"/>'+cal(92,22),lbl(118,116,'ayer','#0F6E9C')),
+ future:()=>sv('u2','<path d="M28 60h38M52 46l16 14-16 14" fill="none" stroke="#1899D6" stroke-width="8" stroke-linecap="round" stroke-linejoin="round"/>'+cal(92,22),lbl(118,116,'mañana','#0F6E9C')),
+ intake:()=>sv('u3','<rect x="82" y="72" width="72" height="16" rx="5" fill="#fff"/><rect x="84" y="86" width="5" height="14" fill="#AFAFAF"/><rect x="147" y="86" width="5" height="14" fill="#AFAFAF"/><ellipse cx="98" cy="68" rx="15" ry="7" fill="#fff"/><circle cx="99" cy="60" r="9" fill="'+SKIN3+'"/><path d="M90 59a9 9 0 0 1 18 0c-4-4-13-5-18 0z" fill="'+HAIR+'"/><rect x="110" y="64" width="44" height="18" rx="8" fill="#CE82FF"/><rect x="116" y="66" width="6" height="13" rx="2" fill="#FFC800"/>'+
+   nurse(38,84,1.05,'hold')+'<rect x="29" y="68" width="22" height="28" rx="3" fill="#fff" stroke="#C48A4A" stroke-width="2.4"/><path d="M34 76h12M34 83h12M34 90h8" stroke="#C4C4C4" stroke-width="2.4" stroke-linecap="round"/>'),
+ discharge:()=>sv('u3',nurse(44,84,1.1,'wave')+'<path d="M92 56L122 30L152 56z" fill="#FF4B4B" stroke="#FF4B4B" stroke-width="4" stroke-linejoin="round"/><rect x="98" y="56" width="48" height="46" fill="#FFC800"/><rect x="114" y="70" width="16" height="32" rx="3" fill="#A560E8"/><rect x="102" y="62" width="9" height="9" rx="2" fill="#fff"/><rect x="133" y="62" width="9" height="9" rx="2" fill="#fff"/>'),
+ pain:()=>sv('u3','<rect x="62" y="48" width="40" height="56" rx="14" fill="#fff" stroke="#E5E5E5" stroke-width="2"/><g stroke="#fff" stroke-width="8" stroke-linecap="round"><path d="M64 56L72 78M100 56L90 78"/></g><circle cx="72" cy="79" r="4.5" fill="'+SKIN+'"/><circle cx="90" cy="79" r="4.5" fill="'+SKIN+'"/><circle cx="82" cy="34" r="12" fill="'+SKIN+'"/><path d="M70 33a12 12 0 0 1 24 0c-5-6-17-8-24 0z" fill="'+HAIR+'"/><path d="M75 34l5-4M89 34l-5-4" stroke="#3C3C3C" stroke-width="2" stroke-linecap="round"/><path d="M76 41q6-5 12 0" fill="none" stroke="#B5543F" stroke-width="2" stroke-linecap="round"/>'+
+   '<path d="'+star(81,76,16,8,8)+'" fill="#FF4B4B"/><path d="'+star(81,76,9,5,8)+'" fill="#FFC800"/>'+
+   ['#FF4B4B','#FF9600','#FFC800','#A6D800','#58CC02'].map((c,i)=>'<rect x="22" y="'+(20+i*14)+'" width="13" height="'+(i===0||i===4?14:14)+'" rx="'+(i===0||i===4?6:0)+'" fill="'+c+'"/>').join('')+'<text x="43" y="32" font-family="Nunito,system-ui,sans-serif" font-weight="900" font-size="11" fill="#7D3FBF">10</text><text x="43" y="84" font-family="Nunito,system-ui,sans-serif" font-weight="900" font-size="11" fill="#7D3FBF">0</text>'),
+ meds:()=>sv('u3',nurse(46,84,1.1,'hold')+'<path d="M38 79h17l-3 15H41z" fill="#fff" stroke="#D5D5D5" stroke-width="1.6"/><circle cx="46.5" cy="86" r="2.8" fill="#FF4B4B"/><rect x="104" y="46" width="36" height="54" rx="9" fill="#FF9600"/><rect x="108" y="34" width="28" height="14" rx="4" fill="#fff"/><rect x="108" y="60" width="28" height="26" rx="4" fill="#fff"/><path d="M122 65v16M114 73h16" stroke="#EA2B2B" stroke-width="4" stroke-linecap="round"/><g transform="rotate(-20 94 92)"><rect x="84" y="87" width="20" height="9" rx="4.5" fill="#fff"/><rect x="84" y="87" width="10" height="9" rx="4.5" fill="#58CC02"/></g>'),
+ vitals:()=>sv('u3','<rect x="104" y="4" width="50" height="24" rx="6" fill="#4B4B4B"/><path d="M110 17h9l3-8 5 15 4-12 3 5h14" fill="none" stroke="#58CC02" stroke-width="2.2" stroke-linejoin="round" stroke-linecap="round"/>'+
+   '<rect x="104" y="58" width="34" height="48" rx="12" fill="#fff" stroke="#E5E5E5" stroke-width="2"/><circle cx="121" cy="45" r="11" fill="'+SKIN2+'"/><path d="M110 44a11 11 0 0 1 22 0c-4-5-16-7-22 0z" fill="'+HAIR+'"/><path d="M106 71L86 77" stroke="#fff" stroke-width="9" stroke-linecap="round"/><circle cx="83" cy="78" r="5" fill="'+SKIN2+'"/><rect x="93" y="68" width="9" height="15" rx="2" fill="#EA2B2B" transform="rotate(-15 97 75)"/><path d="M96 69q-4-15-22-10" fill="none" stroke="#4B4B4B" stroke-width="1.8"/><circle cx="71" cy="58" r="8" fill="#fff" stroke="#8E8E8E" stroke-width="2"/><path d="M71 58l4-4" stroke="#EA2B2B" stroke-width="2" stroke-linecap="round"/>'+
+   nurse(36,84,1.05,'hold',STETH)),
+ food:()=>sv('u3','<rect x="8" y="86" width="144" height="14" fill="#E0B07A"/><rect x="18" y="77" width="124" height="10" rx="5" fill="#CE82FF"/><ellipse cx="54" cy="75" rx="25" ry="5" fill="#fff" stroke="#D9D9D9" stroke-width="2"/><circle cx="45" cy="68" r="7" fill="#58CC02"/><circle cx="57" cy="66" r="8" fill="#FF9600"/><circle cx="66" cy="70" r="6" fill="#FFC800"/><path d="M88 66h30a15 15 0 0 1-30 0z" fill="#fff" stroke="#D9D9D9" stroke-width="2"/><path d="M97 58q-3-5 0-10M108 58q-3-5 0-10" fill="none" stroke="#fff" stroke-width="3" stroke-linecap="round"/><path d="M124 48h15l-2 29h-11z" fill="#DDF4FF" stroke="#1CB0F6" stroke-width="2.5" stroke-linejoin="round"/><path d="M126.5 58h10l-1.2 19h-7.6z" fill="#1CB0F6" opacity=".75"/>'),
+ bathroom:()=>sv('u3','<rect x="86" y="14" width="58" height="88" rx="5" fill="#fff" stroke="#BDBDBD" stroke-width="3"/><circle cx="115" cy="42" r="15" fill="#1CB0F6"/><circle cx="115" cy="36" r="3.6" fill="#fff"/><rect x="109" y="41" width="12" height="11" rx="4" fill="#fff"/><circle cx="134" cy="66" r="3.4" fill="#8E8E8E"/><rect x="20" y="34" width="36" height="50" rx="10" fill="#fff" stroke="#BDBDBD" stroke-width="3"/><circle cx="38" cy="52" r="10" fill="#FF4B4B"/><path d="M33 56h10l-1.4-5a3.6 3.6 0 0 0-7.2 0z" fill="#fff"/><path d="M33 73h10" stroke="#BDBDBD" stroke-width="3" stroke-linecap="round"/>')
+};
+
+/* ================= content ================= */
+const UNITS=[
+ {id:'u1',title:'Conversations',sub:'Greet patients and talk with families',pal:'',
+  guide:{title:'Conversations',tabs:[
+   {label:'Polite address',intro:'With patients and families, use usted, the formal “you.” It shows respect and it is the safe default at the bedside.',
+    tip:'Usted verbs look like “he or she” verbs: tiene, siente, necesita. Switch to tú only if the patient asks you to.',
+    ex:[['¿Cómo se siente hoy?','How are you feeling today?'],['¿Necesita algo?','Do you need anything?'],['Mucho gusto.','Nice to meet you.']]},
+   {label:'Asking questions',intro:'Spanish questions open with ¿ and close with ?. Start with a question word, then the verb.',
+    tip:'Cómo (how), qué (what), dónde (where), cuándo (when), cuánto (how much), quién (who). Add por favor to soften a request.',
+    ex:[['¿Dónde le duele?','Where does it hurt?'],['¿Cuándo empezó el dolor?','When did the pain start?'],['¿Quién es su contacto de emergencia?','Who is your emergency contact?']]}
+  ]},
+  lessons:[
+   {id:'meet',title:'Meeting the patient',
+    phrases:[["Good morning. I am your nurse.","Buenos días. Soy su enfermera."],["How are you feeling today?","¿Cómo se siente hoy?"],["What is your name?","¿Cómo se llama usted?"],["Nice to meet you.","Mucho gusto."],["Do you speak English?","¿Habla usted inglés?"],["I will take care of you today.","Hoy voy a cuidar de usted."],["Please sit down.","Siéntese, por favor."]],
+    vocab:[["the nurse","la enfermera"],["the patient","el paciente"],["hello","hola"],["good afternoon","buenas tardes"],["thank you","gracias"],["please","por favor"],["nice to meet you","mucho gusto"],["the doctor","el médico"]]},
+   {id:'background',title:'Patient background',
+    phrases:[["Where are you from?","¿De dónde es usted?"],["How old are you?","¿Cuántos años tiene?"],["Do you live with someone?","¿Vive usted con alguien?"],["Do you have any allergies?","¿Tiene alguna alergia?"],["What do you do for work?","¿A qué se dedica?"],["What language do you prefer?","¿Qué idioma prefiere?"],["Do you need an interpreter?","¿Necesita un intérprete?"]],
+    vocab:[["age","la edad"],["the allergy","la alergia"],["work","el trabajo"],["the language","el idioma"],["the interpreter","el intérprete"],["the home","la casa"],["alone","solo"],["to live","vivir"]]},
+   {id:'family',title:'Talking with family',
+    phrases:[["Are you his daughter?","¿Es usted su hija?"],["Please come in.","Pase, por favor."],["You can stay with him.","Puede quedarse con él."],["Visiting hours end at eight.","El horario de visitas termina a las ocho."],["Do you have any questions?","¿Tiene alguna pregunta?"],["The doctor will speak with you soon.","El médico hablará con usted pronto."],["Please wait here.","Espere aquí, por favor."]],
+    vocab:[["the mother","la madre"],["the father","el padre"],["the daughter","la hija"],["the son","el hijo"],["the husband","el esposo"],["the wife","la esposa"],["the family","la familia"],["the waiting room","la sala de espera"]]},
+   {id:'aboutme',title:'About me',
+    phrases:[["I have been a nurse for five years.","Soy enfermera desde hace cinco años."],["I work on the surgical floor.","Trabajo en el piso de cirugía."],["I speak a little Spanish.","Hablo un poco de español."],["I am still learning.","Todavía estoy aprendiendo."],["Please speak slowly.","Hable despacio, por favor."],["Can you repeat that?","¿Puede repetir eso?"],["I will get an interpreter.","Voy a buscar un intérprete."]],
+    vocab:[["a little","un poco"],["slowly","despacio"],["to repeat","repetir"],["to understand","entender"],["the floor","el piso"],["the surgery","la cirugía"],["to learn","aprender"],["to speak","hablar"]]}
+  ]},
+ {id:'u2',title:'Tenses',sub:'Now, before, and next',pal:'blue',
+  guide:{title:'Tenses',tabs:[
+   {label:'Present',intro:'Use the present for what is happening now or what you do routinely. For something happening this very second, use estar plus -ando or -iendo.',
+    tip:'Picture your task list: reviso, doy, ayudo. Yo verbs end in -o. Usted verbs end in -a for -ar verbs and -e for -er and -ir verbs.',
+    head:['To…','I (yo)','You (usted)'],rows:[['check (revisar)','reviso','revisa'],['take (tomar)','tomo','toma'],['give (dar)','doy','da'],['help (ayudar)','ayudo','ayuda']],
+    ex:[['Reviso su presión arterial.','I check your blood pressure.'],['Le estoy ayudando.','I am helping you.'],['¿Tiene dolor ahora?','Do you have pain now?']]},
+   {label:'Past',intro:'Use the preterite for something that is finished: a meal, a fall, a dose. Ask “¿Comió?” and you are asking if it already happened.',
+    tip:'Listen for the accent. Usted past verbs end in ó (comió, tomó, empezó). Yo past verbs end in é or í (tomé, comí). For “has this happened today?” use ha plus -ado or -ido: ¿Ha orinado hoy?',
+    head:['To…','I (yo)','You (usted)'],rows:[['check (revisar)','revisé','revisó'],['take (tomar)','tomé','tomó'],['give (dar)','di','dio'],['help (ayudar)','ayudé','ayudó']],
+    ex:[['¿Comió hoy?','Did you eat today?'],['¿Se cayó?','Did you fall?'],['Le di la medicina al mediodía.','I gave you the medicine at noon.']]},
+   {label:'Future',intro:'At the bedside, announce what comes next with ir a plus a verb. It is the easiest future and the most natural one.',
+    tip:'“Voy a…” works before every procedure: Voy a tomarle la presión. For the formal future, add -é (yo) or -á (usted) to the whole verb: regresaré, hablará. Some verbs change: vendrá, tendrá, dirá.',
+    head:['To…','I (yo)','You (usted)'],rows:[['check (revisar)','revisaré','revisará'],['take (tomar)','tomaré','tomará'],['give (dar)','daré','dará'],['help (ayudar)','ayudaré','ayudará']],
+    ex:[['Voy a tomarle la temperatura.','I am going to check your temperature.'],['El médico vendrá pronto.','The doctor will come soon.'],['Mañana usted irá a casa.','Tomorrow you will go home.']]}
+  ]},
+  lessons:[
+   {id:'present',title:'Present tense',
+    phrases:[["I check your blood pressure.","Reviso su presión arterial."],["You feel pain.","Usted siente dolor."],["The doctor is here.","El médico está aquí."],["I give you the medicine.","Le doy la medicina."],["Do you have pain now?","¿Tiene dolor ahora?"],["I am helping you.","Le estoy ayudando."],["I need your name and date of birth.","Necesito su nombre y fecha de nacimiento."]],
+    vocab:[["I check","reviso"],["I give","doy"],["you feel","siente"],["you have","tiene"],["I help","ayudo"],["now","ahora"],["I need","necesito"],["you take","toma"]]},
+   {id:'past',title:'Past tense',
+    phrases:[["Did you eat today?","¿Comió hoy?"],["When did the pain start?","¿Cuándo empezó el dolor?"],["Did you sleep well?","¿Durmió bien?"],["I gave you the medicine at noon.","Le di la medicina al mediodía."],["You took the pill.","Usted tomó la pastilla."],["Did you fall?","¿Se cayó?"],["Have you had any pain today?","¿Ha tenido dolor hoy?"]],
+    vocab:[["you ate","comió"],["it started","empezó"],["you slept","durmió"],["I gave","di"],["you took","tomó"],["you fell","se cayó"],["yesterday","ayer"],["last night","anoche"]]},
+   {id:'future',title:'Future tense',
+    phrases:[["I am going to check your temperature.","Voy a tomarle la temperatura."],["The doctor will come soon.","El médico vendrá pronto."],["Tomorrow you will go home.","Mañana usted irá a casa."],["You are going to feel better.","Se va a sentir mejor."],["I will return in ten minutes.","Regresaré en diez minutos."],["I am going to help you stand up.","Voy a ayudarle a levantarse."],["The nurse will come later.","La enfermera vendrá más tarde."]],
+    vocab:[["tomorrow","mañana"],["soon","pronto"],["I will return","regresaré"],["you will go","irá"],["later","más tarde"],["in ten minutes","en diez minutos"],["better","mejor"],["worse","peor"]]}
+  ]},
+ {id:'u3',title:'At the bedside',sub:'Real nurse and patient moments',pal:'purple',
+  guide:{title:'At the bedside',tabs:[
+   {label:'Sentence frames',intro:'A few frames cover most bedside talk. Learn the frame once, then swap the word in the middle.',
+    tip:'<b>¿Tiene ___?</b> Do you have ___? <br><b>Voy a ___.</b> I am going to ___. <br><b>Dígame si ___.</b> Tell me if ___. <br><b>Necesito ___.</b> I need to ___.',
+    ex:[['¿Tiene náuseas?','Do you have nausea?'],['Voy a revisar la herida.','I am going to check the wound.'],['Dígame si tiene mareo.','Tell me if you feel dizzy.'],['Necesito tomarle la temperatura.','I need to take your temperature.']]},
+   {label:'Commands',intro:'Polite commands use the usted form. It ends in -e for -ar verbs and in -a for -er and -ir verbs.',
+    tip:'Add por favor at the end. To say “tell me” or “call me,” attach the pronoun to the verb: dígame, llámeme.',
+    ex:[['Respire profundo.','Take a deep breath.'],['Espere aquí, por favor.','Please wait here.'],['Llámeme antes de levantarse.','Call me before you stand up.']]}
+  ]},
+  lessons:[
+   {id:'intake',title:'Intake',
+    phrases:[["Why did you come to the hospital?","¿Por qué vino al hospital?"],["What is your date of birth?","¿Cuál es su fecha de nacimiento?"],["Do you take any medications?","¿Toma algún medicamento?"],["Have you had surgery before?","¿Ha tenido cirugía antes?"],["Do you have any medical problems?","¿Tiene algún problema médico?"],["Who is your emergency contact?","¿Quién es su contacto de emergencia?"],["Please sign here.","Firme aquí, por favor."]],
+    vocab:[["the date of birth","la fecha de nacimiento"],["the insurance","el seguro"],["the emergency","la emergencia"],["the wristband","la pulsera"],["the medical history","el historial médico"],["the consent","el consentimiento"],["the address","la dirección"],["the phone number","el número de teléfono"]]},
+   {id:'discharge',title:'Discharge',
+    phrases:[["You are going home today.","Hoy se va a casa."],["Take this medicine twice a day.","Tome esta medicina dos veces al día."],["Keep the wound clean and dry.","Mantenga la herida limpia y seca."],["Do not lift heavy objects.","No levante objetos pesados."],["Call us if you have a fever.","Llámenos si tiene fiebre."],["Your follow-up appointment is next week.","Su cita de seguimiento es la próxima semana."],["Do you understand these instructions?","¿Entiende estas instrucciones?"]],
+    vocab:[["the wound","la herida"],["the fever","la fiebre"],["the bandage","el vendaje"],["the appointment","la cita"],["the stitches","los puntos"],["the instructions","las instrucciones"],["the rest","el descanso"],["to bathe","bañarse"]]},
+   {id:'pain',title:'Pain management',
+    phrases:[["Do you have pain?","¿Tiene dolor?"],["Where does it hurt?","¿Dónde le duele?"],["How strong is the pain, from zero to ten?","¿Qué tan fuerte es el dolor, del cero al diez?"],["Is the pain sharp or dull?","¿El dolor es agudo o sordo?"],["Does the pain come and go?","¿El dolor viene y va?"],["Do you want pain medicine?","¿Quiere medicina para el dolor?"],["Tell me if the pain gets worse.","Dígame si el dolor empeora."]],
+    vocab:[["the pain","el dolor"],["sharp","agudo"],["dull","sordo"],["the burning","el ardor"],["the scale","la escala"],["worse","peor"],["the relief","el alivio"],["strong","fuerte"]]},
+   {id:'meds',title:'Medication management',
+    phrases:[["It is time for your medicine.","Es hora de su medicina."],["Please take this pill.","Tome esta pastilla, por favor."],["Do you have an allergy to any medicine?","¿Tiene alergia a algún medicamento?"],["This medicine is for pain.","Esta medicina es para el dolor."],["Swallow it with water.","Tráguela con agua."],["Tell me if you feel dizzy.","Dígame si siente mareo."],["I am going to give you an injection.","Le voy a poner una inyección."]],
+    vocab:[["the pill","la pastilla"],["the injection","la inyección"],["the dose","la dosis"],["the allergy","la alergia"],["the side effect","el efecto secundario"],["the nausea","la náusea"],["the dizziness","el mareo"],["with food","con comida"]]},
+   {id:'vitals',title:'Vitals',
+    phrases:[["I am going to take your blood pressure.","Voy a tomarle la presión arterial."],["Give me your arm, please.","Deme su brazo, por favor."],["Take a deep breath.","Respire profundo."],["I need to take your temperature.","Necesito tomarle la temperatura."],["Your oxygen level is good.","Su nivel de oxígeno está bien."],["Your heart rate is normal.","Su frecuencia cardíaca es normal."],["Do you feel short of breath?","¿Siente falta de aire?"]],
+    vocab:[["the blood pressure","la presión arterial"],["the temperature","la temperatura"],["the pulse","el pulso"],["the breathing","la respiración"],["the oxygen","el oxígeno"],["the heart rate","la frecuencia cardíaca"],["the arm","el brazo"],["the finger","el dedo"]]},
+   {id:'food',title:'Food and water',
+    phrases:[["Are you hungry?","¿Tiene hambre?"],["Are you thirsty?","¿Tiene sed?"],["You can drink water.","Puede beber agua."],["Do not eat or drink anything.","No coma ni beba nada."],["Did you eat all of your breakfast?","¿Se comió todo el desayuno?"],["Do you have any food allergies?","¿Tiene alergia a algún alimento?"],["I am going to measure what you drink.","Voy a medir lo que usted bebe."]],
+    vocab:[["the water","el agua"],["the food","la comida"],["the breakfast","el desayuno"],["the lunch","el almuerzo"],["the dinner","la cena"],["the hunger","el hambre"],["the thirst","la sed"],["the calories","las calorías"]]},
+   {id:'bathroom',title:'Bathroom',
+    phrases:[["Do you need to use the bathroom?","¿Necesita ir al baño?"],["I will walk with you to the bathroom.","Voy a caminar con usted al baño."],["Please call me before you stand up.","Llámeme antes de levantarse, por favor."],["Have you urinated today?","¿Ha orinado hoy?"],["Have you had a bowel movement today?","¿Ha evacuado hoy?"],["Do you need a bedpan?","¿Necesita una cuña?"],["Use the call button.","Use el botón de llamada."]],
+    vocab:[["the bathroom","el baño"],["the bedpan","la cuña"],["the toilet","el inodoro"],["the call button","el botón de llamada"],["the urine","la orina"],["the diarrhea","la diarrea"],["the constipation","el estreñimiento"],["to urinate","orinar"]]}
+  ]}
+];
+const LESSONS=UNITS.flatMap(u=>u.lessons);
+const VOCEN={};LESSONS.forEach(l=>l.vocab.forEach(([en,es])=>VOCEN[es]=en));
+/* scenario = situation, what the nurse says in English, Spanish target, tappable hints */
+const SCEN={
+ meet:[
+  {s:"Mrs. Reyes is back from surgery and awake. You walk into her room for the first time.",en:"Good morning. My name is Lauren and I am your nurse today.",es:"Buenos días. Me llamo Lauren y soy su enfermera hoy.",h:[["Good morning","Buenos días"],["My name is","Me llamo"],["Lauren","Lauren"],["and","y"],["I am","soy"],["your nurse","su enfermera"],["today","hoy"]]},
+  {s:"A patient looks confused when you start speaking English.",en:"Do you prefer to speak Spanish?",es:"¿Prefiere hablar español?",h:[["Do you prefer","Prefiere"],["to speak","hablar"],["Spanish","español"]]},
+  {s:"You are leaving the room after checking on a patient.",en:"I will be back soon. Press the button if you need me.",es:"Vuelvo pronto. Presione el botón si me necesita.",h:[["I will be back","Vuelvo"],["soon","pronto"],["Press","Presione"],["the button","el botón"],["if","si"],["you need me","me necesita"]]}],
+ background:[
+  {s:"Admission paperwork needs an allergy check.",en:"Are you allergic to any medicine or food?",es:"¿Es alérgica a algún medicamento o alimento?",alt:["¿Es alérgico a algún medicamento o alimento?"],h:[["Are you allergic","Es alérgica"],["to any","a algún"],["medicine","medicamento"],["or","o"],["food","alimento"]]},
+  {s:"You want to know who will help at home after discharge.",en:"Who lives with you at home?",es:"¿Quién vive con usted en casa?",h:[["Who","Quién"],["lives","vive"],["with you","con usted"],["at home","en casa"]]},
+  {s:"The patient needs a lot of translation help.",en:"I am going to call an interpreter for us.",es:"Voy a llamar a un intérprete para nosotros.",h:[["I am going to","Voy a"],["call","llamar a"],["an interpreter","un intérprete"],["for us","para nosotros"]]}],
+ family:[
+  {s:"A worried woman arrives at the nurses' station asking about a patient.",en:"Are you a family member? What is your name?",es:"¿Es usted familiar? ¿Cómo se llama?",h:[["Are you","Es usted"],["a family member","familiar"],["What is your name","Cómo se llama"]]},
+  {s:"The patient's son wants to know what is happening.",en:"The surgery went well. He is resting now.",es:"La cirugía salió bien. Él está descansando ahora.",h:[["The surgery","La cirugía"],["went well","salió bien"],["He is resting","Él está descansando"],["now","ahora"]]},
+  {s:"Visiting hours are over but the daughter wants to stay.",en:"One person can stay with her tonight.",es:"Una persona puede quedarse con ella esta noche.",h:[["One person","Una persona"],["can stay","puede quedarse"],["with her","con ella"],["tonight","esta noche"]]}],
+ aboutme:[
+  {s:"The patient asks how long you have worked here.",en:"I have worked in this hospital for three years.",es:"He trabajado en este hospital durante tres años.",h:[["I have worked","He trabajado"],["in this hospital","en este hospital"],["for","durante"],["three years","tres años"]]},
+  {s:"The patient speaks fast and you miss part of it.",en:"Sorry, I did not understand. Can you say it again, more slowly?",es:"Perdón, no entendí. ¿Puede decirlo otra vez, más despacio?",h:[["Sorry","Perdón"],["I did not understand","no entendí"],["Can you say it","Puede decirlo"],["again","otra vez"],["more slowly","más despacio"]]},
+  {s:"The patient compliments your Spanish.",en:"Thank you. I am learning Spanish to help my patients.",es:"Gracias. Estoy aprendiendo español para ayudar a mis pacientes.",h:[["Thank you","Gracias"],["I am learning","Estoy aprendiendo"],["Spanish","español"],["to help","para ayudar a"],["my patients","mis pacientes"]]}],
+ present:[
+  {s:"You are at the computer updating the chart while the patient watches.",en:"I am writing your notes right now.",es:"Estoy escribiendo sus notas ahora mismo.",h:[["I am writing","Estoy escribiendo"],["your notes","sus notas"],["right now","ahora mismo"]]},
+  {s:"Shift change. You explain your routine to the patient.",en:"I check on you every two hours.",es:"La reviso cada dos horas.",alt:["Lo reviso cada dos horas."],h:[["I check on you","La reviso"],["every","cada"],["two hours","dos horas"]]},
+  {s:"The patient asks where the doctor is.",en:"The doctor is seeing another patient. She is coming.",es:"La doctora está viendo a otro paciente. Ya viene.",h:[["The doctor","La doctora"],["is seeing","está viendo a"],["another patient","otro paciente"],["She is coming","Ya viene"]]}],
+ past:[
+  {s:"You find the patient on the floor next to the bed.",en:"Did you fall? Did you hit your head?",es:"¿Se cayó? ¿Se golpeó la cabeza?",h:[["Did you fall","Se cayó"],["Did you hit","Se golpeó"],["your head","la cabeza"]]},
+  {s:"Morning rounds. You ask about last night.",en:"Did you sleep well? Did you have pain during the night?",es:"¿Durmió bien? ¿Tuvo dolor durante la noche?",h:[["Did you sleep","Durmió"],["well","bien"],["Did you have","Tuvo"],["pain","dolor"],["during the night","durante la noche"]]},
+  {s:"You explain what already happened before the patient woke up.",en:"We gave you medicine for the pain an hour ago.",es:"Le dimos medicina para el dolor hace una hora.",h:[["We gave you","Le dimos"],["medicine","medicina"],["for the pain","para el dolor"],["an hour ago","hace una hora"]]}],
+ future:[
+  {s:"The patient asks what happens next this afternoon.",en:"This afternoon you are going to walk with physical therapy.",es:"Esta tarde va a caminar con fisioterapia.",h:[["This afternoon","Esta tarde"],["you are going to walk","va a caminar"],["with physical therapy","con fisioterapia"]]},
+  {s:"You are about to leave the room.",en:"I will come back at nine with your medicine.",es:"Regresaré a las nueve con su medicina.",h:[["I will come back","Regresaré"],["at nine","a las nueve"],["with your medicine","con su medicina"]]},
+  {s:"The patient is nervous about tomorrow.",en:"Tomorrow the doctor will remove the bandage.",es:"Mañana el médico le quitará el vendaje.",h:[["Tomorrow","Mañana"],["the doctor","el médico"],["will remove","le quitará"],["the bandage","el vendaje"]]}],
+ intake:[
+  {s:"A new patient arrives on the unit. You confirm identity.",en:"Can you tell me your full name and date of birth?",es:"¿Puede decirme su nombre completo y fecha de nacimiento?",h:[["Can you tell me","Puede decirme"],["your full name","su nombre completo"],["and","y"],["date of birth","fecha de nacimiento"]]},
+  {s:"You are reviewing home medications.",en:"What medicines do you take at home, and how often?",es:"¿Qué medicinas toma en casa y con qué frecuencia?",h:[["What medicines","Qué medicinas"],["do you take","toma"],["at home","en casa"],["and","y"],["how often","con qué frecuencia"]]},
+  {s:"You need to know when the patient last ate before surgery.",en:"When was the last time you ate or drank anything?",es:"¿Cuándo fue la última vez que comió o bebió algo?",h:[["When was","Cuándo fue"],["the last time","la última vez"],["that you ate","que comió"],["or drank","o bebió"],["anything","algo"]]}],
+ discharge:[
+  {s:"Going over wound care at home.",en:"Wash your hands before you touch the wound.",es:"Lávese las manos antes de tocar la herida.",h:[["Wash","Lávese"],["your hands","las manos"],["before","antes de"],["you touch","tocar"],["the wound","la herida"]]},
+  {s:"Warning signs to watch for at home.",en:"Call the doctor if you see redness or pus.",es:"Llame al médico si ve enrojecimiento o pus.",h:[["Call","Llame"],["the doctor","al médico"],["if you see","si ve"],["redness","enrojecimiento"],["or pus","o pus"]]},
+  {s:"Activity restrictions for the next two weeks.",en:"No driving for two weeks.",es:"No maneje durante dos semanas.",h:[["No driving","No maneje"],["for","durante"],["two weeks","dos semanas"]]}],
+ pain:[
+  {s:"The patient is grimacing and holding their side.",en:"Show me where it hurts.",es:"Muéstreme dónde le duele.",h:[["Show me","Muéstreme"],["where","dónde"],["it hurts","le duele"]]},
+  {s:"You gave pain medicine thirty minutes ago.",en:"Is the pain better now, or the same?",es:"¿El dolor está mejor ahora, o igual?",h:[["The pain","El dolor"],["is better","está mejor"],["now","ahora"],["or the same","o igual"]]},
+  {s:"Teaching the patient to ask for help early.",en:"Do not wait until the pain is very strong. Call me.",es:"No espere hasta que el dolor sea muy fuerte. Llámeme.",h:[["Do not wait","No espere"],["until","hasta que"],["the pain","el dolor"],["is very strong","sea muy fuerte"],["Call me","Llámeme"]]}],
+ meds:[
+  {s:"You are hanging a new IV bag.",en:"This is an antibiotic. It goes through your IV.",es:"Esto es un antibiótico. Va por su vía intravenosa.",h:[["This is","Esto es"],["an antibiotic","un antibiótico"],["It goes","Va"],["through your IV","por su vía intravenosa"]]},
+  {s:"Before giving a blood thinner shot in the belly.",en:"This injection prevents blood clots. It will sting a little.",es:"Esta inyección previene coágulos. Va a arder un poco.",h:[["This injection","Esta inyección"],["prevents","previene"],["blood clots","coágulos"],["It will sting","Va a arder"],["a little","un poco"]]},
+  {s:"The patient refuses a pill.",en:"Why do you not want to take it? Does it make you feel sick?",es:"¿Por qué no quiere tomarla? ¿Le cae mal?",h:[["Why","Por qué"],["do you not want","no quiere"],["to take it","tomarla"],["Does it make you feel sick","Le cae mal"]]}],
+ vitals:[
+  {s:"Four a.m. vitals. The patient is half asleep.",en:"Sorry to wake you. I need to check your vital signs.",es:"Perdón por despertarla. Necesito revisar sus signos vitales.",alt:["Perdón por despertarlo. Necesito revisar sus signos vitales."],h:[["Sorry","Perdón"],["to wake you","por despertarla"],["I need","Necesito"],["to check","revisar"],["your vital signs","sus signos vitales"]]},
+  {s:"Placing the pulse oximeter.",en:"I am going to put this on your finger. It does not hurt.",es:"Le voy a poner esto en el dedo. No duele.",h:[["I am going to put","Le voy a poner"],["this","esto"],["on your finger","en el dedo"],["It does not hurt","No duele"]]},
+  {s:"The reading is high and you want to recheck.",en:"Your blood pressure is a little high. I will check it again in ten minutes.",es:"Su presión está un poco alta. La revisaré otra vez en diez minutos.",h:[["Your blood pressure","Su presión"],["is a little high","está un poco alta"],["I will check it","La revisaré"],["again","otra vez"],["in ten minutes","en diez minutos"]]}],
+ food:[
+  {s:"The surgeon has cleared the patient to start eating.",en:"Today you can start with liquids. Tomorrow, soft food.",es:"Hoy puede empezar con líquidos. Mañana, comida blanda.",h:[["Today","Hoy"],["you can start","puede empezar"],["with liquids","con líquidos"],["Tomorrow","Mañana"],["soft food","comida blanda"]]},
+  {s:"The tray comes back mostly untouched.",en:"You only ate a little. Are you nauseous?",es:"Solo comió un poco. ¿Tiene náuseas?",h:[["You only ate","Solo comió"],["a little","un poco"],["Are you nauseous","Tiene náuseas"]]},
+  {s:"You are tracking intake and output.",en:"Please tell me every time you drink something.",es:"Por favor, dígame cada vez que beba algo.",h:[["Please","Por favor"],["tell me","dígame"],["every time","cada vez que"],["you drink","beba"],["something","algo"]]}],
+ bathroom:[
+  {s:"A fall-risk patient wants to get up alone.",en:"Do not get up alone. I will help you.",es:"No se levante sola. Yo le ayudo.",alt:["No se levante solo. Yo le ayudo."],h:[["Do not get up","No se levante"],["alone","sola"],["I will help you","Yo le ayudo"]]},
+  {s:"Post-op bowel check.",en:"Have you passed gas since the surgery?",es:"¿Ha expulsado gases desde la cirugía?",h:[["Have you passed","Ha expulsado"],["gas","gases"],["since the surgery","desde la cirugía"]]},
+  {s:"The patient has a catheter and is worried.",en:"They will remove the catheter tomorrow morning.",es:"Le quitarán la sonda mañana por la mañana.",h:[["They will remove","Le quitarán"],["the catheter","la sonda"],["tomorrow morning","mañana por la mañana"]]}]
+};
+
+const CATS=[['all','All'],['body','Body'],['symptoms','Symptoms'],['procedures','Procedures'],['equipment','Equipment'],['medicines','Medicines'],['words','Lesson words']];
+const GLOSS=[
+ ['body','the heart','el corazón'],['body','the lungs','los pulmones'],['body','the stomach','el estómago'],['body','the kidney','el riñón'],['body','the liver','el hígado'],
+ ['body','the bladder','la vejiga'],['body','the abdomen','el abdomen'],['body','the spine','la columna vertebral'],['body','the incision','la incisión'],['body','the gallbladder','la vesícula biliar'],
+ ['symptoms','nausea','las náuseas'],['symptoms','vomiting','el vómito'],['symptoms','dizziness','el mareo'],['symptoms','swelling','la hinchazón'],['symptoms','bleeding','el sangrado'],
+ ['symptoms','shortness of breath','la falta de aire'],['symptoms','chills','los escalofríos'],['symptoms','numbness','el entumecimiento'],['symptoms','itching','la picazón'],['symptoms','constipation','el estreñimiento'],
+ ['procedures','the anesthesia','la anestesia'],['procedures','the surgery','la cirugía'],['procedures','the X-ray','la radiografía'],['procedures','the blood test','el análisis de sangre'],['procedures','the dressing change','el cambio de vendaje'],
+ ['procedures','the IV line','la vía intravenosa'],['procedures','the catheter','el catéter'],['procedures','the biopsy','la biopsia'],['procedures','the blood transfusion','la transfusión de sangre'],
+ ['equipment','the bedpan','la cuña'],['equipment','the crutches','las muletas'],['equipment','the wheelchair','la silla de ruedas'],['equipment','the walker','el andador'],['equipment','the oxygen mask','la mascarilla de oxígeno'],
+ ['equipment','the thermometer','el termómetro'],['equipment','the stethoscope','el estetoscopio'],['equipment','the IV pole','el poste de suero'],['equipment','the call button','el botón de llamada'],
+ ['medicines','the antibiotic','el antibiótico'],['medicines','the painkiller','el analgésico'],['medicines','the blood thinner','el anticoagulante'],['medicines','the stool softener','el ablandador de heces'],['medicines','the ointment','la pomada'],['medicines','the inhaler','el inhalador']
+].map(([c,en,es])=>({c,en,es}));
+const GLOSS_ALL=(()=>{
+  const key=g=>plain(g.es).replace(/^(el|la|los|las|un|una) /,'');
+  const seen=new Set(GLOSS.map(g=>plain(g.es)));const out=GLOSS.slice();
+  LESSONS.forEach(l=>l.vocab.forEach(([en,es])=>{const k=plain(es);if(!seen.has(k)){seen.add(k);out.push({c:'words',en,es})}}));
+  return out.sort((a,b)=>key(a).localeCompare(key(b)));
+})();
+
+/* ================= state ================= */
+const KEY='bedside-espanol-v1';
+const fresh=()=>({done:[],xp:0,streak:0,last:null,right:0,total:0,speak:true,updated:0});
+let S=fresh();
+try{const r=localStorage.getItem(KEY);if(r)S=Object.assign(fresh(),JSON.parse(r))}catch(e){}
+/* progress: native phone storage when running inside the iOS app, localStorage otherwise */
+const NB=window.NativeBridge||null;
+let syncState=NB&&NB.storage?'native':'local';
+const save=()=>{S.updated=Date.now();const j=JSON.stringify(S);try{localStorage.setItem(KEY,j)}catch(e){};if(NB&&NB.storage)NB.storage.set(KEY,j).catch(()=>{})};
+function merge(remote){
+  if(!remote)return;
+  const r=Object.assign(fresh(),remote);
+  const newer=(r.updated||0)>=(S.updated||0);
+  const base=newer?r:S,other=newer?S:r;
+  const m=Object.assign({},base);
+  m.done=[...new Set([...(S.done||[]),...(r.done||[])])];
+  m.xp=Math.max(S.xp||0,r.xp||0);m.right=Math.max(S.right||0,r.right||0);m.total=Math.max(S.total||0,r.total||0);
+  if((other.streak||0)>(m.streak||0)&&other.last&&(!m.last||other.last>=m.last)){m.streak=other.streak;m.last=other.last}
+  S=m;
+}
+async function loadNative(){
+  if(!NB||!NB.storage)return;
+  try{
+    const j=await NB.storage.get(KEY);
+    const had=JSON.stringify(S);
+    if(j)merge(JSON.parse(j));
+    const now=JSON.stringify(S);
+    try{localStorage.setItem(KEY,now)}catch(e){}
+    if(now!==j)await NB.storage.set(KEY,now);
+    if(now!==had&&!L&&!G){render();if(view==='learn')scrollToCurrent()}
+  }catch(e){}
+}
+function renderSyncNote(){}
+const dayStr=(d=new Date())=>d.getFullYear()+'-'+String(d.getMonth()+1).padStart(2,'0')+'-'+String(d.getDate()).padStart(2,'0');
+const yesterday=()=>dayStr(new Date(Date.now()-864e5));
+const streakNow=()=>(S.last===dayStr()||S.last===yesterday())?S.streak:0;
+
+let view='learn',gq='',gc='all',L=null,G=null,opener=null,micPause=0;
+
+/* ================= audio ================= */
+const SR=window.SpeechRecognition||window.webkitSpeechRecognition;
+const NSR=NB&&NB.speech?NB.speech:null;
+let micSupported=!!SR||!!NSR;
+if(NSR&&!SR){NSR.available().then(ok=>{micSupported=!!ok;if(!ok&&view==='profile')render()}).catch(()=>{})}
+const speakOn=()=>micSupported&&S.speak!==false&&Date.now()>micPause;
+function toast(msg){const t=$('#toast');t.textContent=msg;t.hidden=false;clearTimeout(toast.t);toast.t=setTimeout(()=>t.hidden=true,2600)}
+function say(text,rate){
+  try{
+    if(!('speechSynthesis' in window)){toast('Audio is not available in this browser.');return}
+    speechSynthesis.cancel();
+    const u=new SpeechSynthesisUtterance(text);
+    let vs=speechSynthesis.getVoices();if(!vs.length){speechSynthesis.onvoiceschanged=()=>{};}
+    const v=vs.find(v=>/^es[-_](MX|US|419)/i.test(v.lang))||vs.find(v=>/^es/i.test(v.lang));
+    if(v)u.voice=v;
+    u.lang=v?v.lang:'es-MX';u.rate=rate||0.95;
+    speechSynthesis.speak(u);
+  }catch(e){toast('Audio is not available in this browser.')}
+}
+
+/* ================= shell ================= */
+function renderNav(){
+  const set=(t,icon,label)=>{const b=$('.nav [data-tab="'+t+'"]');b.innerHTML=ic(icon)+'<span>'+label+'</span>';if(t===view)b.setAttribute('aria-current','page');else b.removeAttribute('aria-current')};
+  set('learn','learn','Learn');set('scenarios','chat','Scenarios');set('glossary','list','Glossary');set('profile','user','Profile');
+}
+function renderTop(){
+  $('#top').innerHTML='<div class="top-in"><span class="lang"><span class="lang-badge" aria-hidden="true">ES</span>Spanish</span>'+
+   '<div class="top-r"><div class="stats"><span class="stat s-fire">'+ic('flame')+'<b>'+streakNow()+'</b><span class="sr"> day streak</span></span>'+
+   '<span class="stat s-xp">'+ic('bolt')+'<b>'+S.xp+'</b><span class="sr"> XP</span></span></div><button type="button" class="icon-btn accent" data-act="qg" aria-label="Open quick glossary">'+ic('book')+'</button></div></div>';
+}
+function setTab(t){view=t;renderNav();render();window.scrollTo(0,0)}
+function render(){renderTop();if(view==='learn')renderLearn();else if(view==='scenarios')renderScenarios();else if(view==='glossary')renderGlossary();else renderProfile()}
+function renderScenarios(){
+  $('#main').innerHTML='<h1 class="h1">Scenarios</h1><p class="lede">Real bedside moments. Read the situation, see what the nurse says in English, and write it in Spanish. Tap any phrase for a hint.</p>'+
+   '<ul class="sc-list">'+LESSONS.map(l=>'<li class="sc"><div class="thumb">'+SCENES[l.id]()+'</div><div><p class="sc-t">'+esc(l.title)+'</p><p class="sc-n">'+SCEN[l.id].length+' scenarios</p></div><button type="button" class="btn btn-blue btn-sm" data-scen="'+l.id+'" aria-label="Practice '+esc(l.title)+' scenarios">Practice</button></li>').join('')+'</ul>';
+}
+
+/* ================= learn path ================= */
+const DX=[0,40,66,40,0,-40,-66,-40];
+function renderLearn(){
+  const firstOpen=LESSONS.findIndex(l=>!S.done.includes(l.id));
+  let h='<h1 class="sr">Learn</h1>';
+  UNITS.forEach((u,ui)=>{
+    h+='<section class="unit '+u.pal+'" aria-labelledby="h-'+u.id+'"><div class="banner"><div><p class="kicker">Unit '+(ui+1)+'</p><h2 id="h-'+u.id+'">'+esc(u.title)+'</h2><p class="ban-sub">'+esc(u.sub)+'</p></div>'+
+      '<button type="button" class="btn-g" data-guide="'+u.id+'" aria-label="Open guidebook for '+esc(u.title)+'">'+ic('book')+'<span>Guide</span></button></div><ol class="path">';
+    u.lessons.forEach((l,i)=>{
+      const idx=LESSONS.indexOf(l);
+      const st=S.done.includes(l.id)?'done':(idx===firstOpen?'current':'locked');
+      const icon=st==='done'?'check':st==='locked'?'lock':'star';
+      const status=st==='done'?'completed':st==='locked'?'locked':'next lesson';
+      h+='<li class="step '+(st==='current'?'cur':'')+'" style="--dx:'+DX[i%DX.length]+'px"><div class="step-body">'+
+        (st==='current'?'<span class="bubble" aria-hidden="true">Start</span>':'')+
+        '<button type="button" class="node '+st+'" data-node="'+l.id+'" aria-expanded="false" aria-controls="pop-'+l.id+'" aria-label="'+esc(l.title)+', '+status+'">'+ic(icon)+'</button>'+
+        '<span class="step-label">'+esc(l.title)+'</span></div>'+
+        '<div class="pop '+(st==='locked'?'locked':'')+'" id="pop-'+l.id+'" hidden>'+
+        (st==='locked'
+          ?'<p class="pop-t">'+esc(l.title)+'</p><p class="pop-s">Finish the lessons before this one to unlock it.</p><button type="button" class="btn" disabled>Locked</button>'
+          :'<div class="pop-top"><div class="thumb">'+SCENES[l.id]()+'</div><div><p class="pop-t">'+esc(l.title)+'</p><p class="pop-s">Lesson '+(idx+1)+' of '+LESSONS.length+'. '+l.vocab.length+' words, '+l.phrases.length+' phrases, and speaking practice.</p></div></div><button type="button" class="btn" data-start="'+l.id+'">'+(st==='done'?'Practice again':'Start')+' +10 XP</button>')+
+        '</div></li>';
+    });
+    h+='</ol></section>';
+  });
+  $('#main').innerHTML=h;
+}
+function togglePop(btn){
+  const pop=$('#'+btn.getAttribute('aria-controls'));
+  const open=pop.hidden;
+  $$('.pop').forEach(p=>p.hidden=true);
+  $$('.node').forEach(n=>n.setAttribute('aria-expanded','false'));
+  if(open){pop.hidden=false;btn.setAttribute('aria-expanded','true');pop.scrollIntoView({block:'nearest',behavior:reduced()?'auto':'smooth'})}
+}
+function scrollToCurrent(){
+  const n=$('.node.current')||$$('.node').pop();
+  if(n)n.scrollIntoView({block:'center',behavior:'auto'});
+}
+
+/* ================= glossary ================= */
+function renderGlossary(){
+  $('#main').innerHTML='<h1 class="h1">Glossary</h1><p class="lede">Words that rarely come up in everyday talk. Tap the speaker to hear a term.</p>'+
+   '<div class="field"><label for="gs">Search terms</label><div class="sw">'+ic('search')+'<input id="gs" type="search" autocomplete="off" autocapitalize="off" spellcheck="false" placeholder="Try wound or herida" value="'+esc(gq)+'"></div></div>'+
+   '<div class="chips" role="group" aria-label="Filter by category">'+CATS.map(([k,n])=>'<button type="button" class="chip" data-cat="'+k+'" aria-pressed="'+(gc===k)+'">'+n+'</button>').join('')+'</div>'+
+   '<p class="count" id="gcount" role="status" aria-live="polite"></p><div id="glist"></div>';
+  fillGlossary();
+}
+function fillGlossary(){
+  const q=plain(gq.trim());
+  const rows=GLOSS_ALL.filter(g=>(gc==='all'||g.c===gc)&&(!q||plain(g.en).includes(q)||plain(g.es).includes(q)));
+  $('#gcount').textContent=rows.length+(rows.length===1?' term':' terms');
+  $('#glist').innerHTML=rows.length?rows.map(g=>'<div class="term"><button type="button" class="spk" data-say="'+esc(g.es)+'" aria-label="Play '+esc(g.es)+'">'+ic('speaker')+'</button><div><p class="t-es">'+esc(g.es)+'</p><p class="t-en">'+esc(g.en)+'</p></div></div>').join('')
+   :'<div class="empty"><h2>No terms match “'+esc(gq)+'”</h2><p>Try a shorter word, or search in English or Spanish.</p><button type="button" class="btn btn-blue btn-sm" data-act="clear-gloss">Show all terms</button></div>';
+}
+
+/* ================= profile ================= */
+function renderProfile(){
+  const acc=S.total?Math.round(S.right/S.total*100):0;
+  $('#main').innerHTML='<h1 class="sr">Profile</h1><div class="avatar" aria-hidden="true">'+ic('user')+'</div>'+
+   '<p class="h1 center" style="margin-top:14px">Your progress</p><p class="lede center" id="sync-note" style="margin-inline:auto">'+(syncState==='native'?'Progress is saved on this phone.':'Progress is saved in this browser.')+'</p>'+
+   '<div class="cards"><div class="card">'+ic('flame')+'<b>'+streakNow()+'</b><span>Day streak</span></div>'+
+   '<div class="card">'+ic('bolt')+'<b>'+S.xp+'</b><span>Total XP</span></div>'+
+   '<div class="card">'+ic('star').replace('<svg class="ic ','<svg style="color:#FFC800" class="ic ')+'<b>'+S.done.length+' of '+LESSONS.length+'</b><span>Lessons done</span></div>'+
+   '<div class="card">'+ic('check').replace('<svg class="ic ','<svg style="color:#46A302" class="ic ')+'<b>'+acc+'%</b><span>Accuracy</span></div></div>'+
+   '<div class="switch"><label for="sp-toggle"><span class="sw-t">Speaking exercises</span><span class="sw-n">'+(micSupported?'Uses your microphone. Speaking mistakes never cost a heart.':(NB?'Speech recognition is not available on this device.':'This browser cannot listen to speech. Try Chrome or Safari.'))+'</span></label><input id="sp-toggle" type="checkbox"'+(micSupported&&S.speak!==false?' checked':'')+(micSupported?'':' disabled')+'></div>'+
+   '<div class="center mt"><button type="button" class="btn btn-ghost btn-sm" data-act="reset">Reset progress</button></div>';
+}
+
+/* ================= dialog ================= */
+function ask(o){
+  const d=$('#dlg');
+  d.innerHTML='<h2>'+esc(o.title)+'</h2><p>'+esc(o.text)+'</p><div class="dlg-btns"><button type="button" class="btn" value="no" autofocus>'+esc(o.no)+'</button><button type="button" class="btn btn-danger-o" value="yes">'+esc(o.yes)+'</button></div>';
+  d.returnValue='';
+  $$('button',d).forEach(b=>b.onclick=()=>d.close(b.value));
+  d.onclose=()=>{d.onclose=null;if(d.returnValue==='yes')o.onYes()};
+  d.showModal();
+}
+
+/* ================= exercise builders ================= */
+const tokens=s=>s.replace(/[¿?¡!.,]/g,'').split(/\s+/).filter(Boolean);
+function mkMC(v,dir,pool){
+  const ci=dir==='en2es'?1:0;
+  const others=shuffle(pool.filter(x=>x!==v)).slice(0,3);
+  const opts=shuffle([{t:v[ci],ok:true},...others.map(o=>({t:o[ci],ok:false}))]);
+  return {kind:'mc',dir,prompt:dir==='en2es'?'How do you say “'+v[0]+'”?':'What does “'+v[1]+'” mean?',say:dir==='es2en'?v[1]:null,opts,ans:v[ci]};
+}
+function mkTr(p,dir,pool){
+  const src=dir==='en2es'?p[0]:p[1],tgt=dir==='en2es'?p[1]:p[0];
+  const ans=tokens(tgt),have=new Set(ans.map(w=>w.toLowerCase()));
+  const extra=shuffle([...new Set(pool.filter(q=>q!==p).flatMap(q=>tokens(dir==='en2es'?q[1]:q[0])).map(w=>w.toLowerCase()))]).filter(w=>!have.has(w)).slice(0,3);
+  const bank=shuffle([...ans,...extra]).map((t,i)=>({id:i,t}));
+  return {kind:'tr',dir,src,tgt,bank,say:dir==='es2en'?src:null};
+}
+function mkMatch(vs){
+  const pairs=vs.map((v,k)=>({k,en:v[0],es:v[1]}));
+  return {kind:'match',pairs,left:shuffle(pairs.map(p=>({k:p.k,t:p.en}))),right:shuffle(pairs.map(p=>({k:p.k,t:p.es})))};
+}
+function mkPic(v,pool){
+  const emo=PIC[v[1]];if(!emo)return null;
+  const same=pool.filter(x=>x!==v&&PIC[x[1]]&&PIC[x[1]]!==emo).map(x=>[x[1],PIC[x[1]],x[0]]);
+  let others=shuffle(same).slice(0,3);
+  if(others.length<3){
+    const used=new Set([emo,...others.map(o=>o[1])]),names=new Set([v[1],...others.map(o=>o[0])]);
+    others=others.concat(shuffle(PICPOOL.filter(([es,e])=>!names.has(es)&&!used.has(e))).slice(0,3-others.length).map(([es,e])=>[es,e,VOCEN[es]||es]));
+  }
+  const opts=shuffle([{t:v[1],emo,en:v[0],ok:true},...others.map(([es,e,en])=>({t:es,emo:e,en,ok:false}))]);
+  return {kind:'mc',pic:true,dir:'es2en',prompt:'Which one is “'+v[1]+'”?',say:v[1],opts,ans:v[1]};
+}
+function mkScen(sc){return {kind:'scen',sc}}
+function mkSpeak(p,pool){return {kind:'speak',src:p[0],tgt:p[1],alt:mkTr(p,'en2es',pool)}}
+function mkCloze(p,pool){
+  const toks=p[1].split(/\s+/);let bi=0,bl=0;
+  toks.forEach((t,i)=>{const w=t.replace(/[¿?¡!.,]/g,'');if(w.length>bl){bl=w.length;bi=i}});
+  const t=toks[bi],word=t.replace(/[¿?¡!.,]/g,''),lead=t.match(/^[¿¡]*/)[0],trail=t.match(/[?!.,]*$/)[0];
+  const before=toks.slice(0,bi).join(' ')+(bi?' ':'')+lead,after=trail+(bi<toks.length-1?' ':'')+toks.slice(bi+1).join(' ');
+  return {kind:'cloze',en:p[0],before,after,word,tgt:p[1],alt:mkTr(p,'en2es',pool)};
+}
+function buildQueue(l){
+  const v=l.vocab,p=l.phrases,P=p.length,g=i=>p[i%P],on=speakOn(),sc=SCEN[l.id]||[];
+  const pi=v.findIndex(x=>PIC[x[1]]),pj=v.findIndex((x,i)=>PIC[x[1]]&&i!==pi);
+  const a=pi>=0?mkPic(v[pi],v):mkMC(v[0],'en2es',v),b=pj>=0?mkPic(v[pj],v):mkMC(v[2],'en2es',v);
+  const q=[a,mkTr(g(0),'en2es',p),mkMC(v[1],'es2en',v),mkTr(g(1),'en2es',p),mkMatch(v.slice(0,5)),
+    on?mkSpeak(g(2),p):mkTr(g(2),'en2es',p),sc[0]&&mkScen(sc[0]),mkTr(g(3),'en2es',p),b,
+    on?mkCloze(g(4),p):mkTr(g(4),'en2es',p),sc[1]&&mkScen(sc[1]),mkTr(g(5),'en2es',p),mkMatch(v.slice(3,8)),
+    on?mkSpeak(g(6),p):mkTr(g(6),'es2en',p),sc[2]&&mkScen(sc[2])];
+  return q.filter(Boolean);
+}
+
+/* ================= lesson player ================= */
+const newSt=()=>({sel:null,chosen:[],a:null,b:null,matched:[],bad:null,locked:false,listening:false,alts:[],msg:'',tried:false,typed:'',hints:[],revealed:false});
+function openLesson(id,from,mode){
+  if(L)stopRec();
+  const l=LESSONS.find(x=>x.id===id);
+  opener=from||null;
+  const q=mode==='scen'?shuffle(SCEN[id].map(mkScen)):buildQueue(l);
+  L={l,q,mode:mode||'lesson',total:q.length,done:0,hearts:5,att:0,right:0,t0:Date.now(),cur:null,st:null,checked:false,ok:false};
+  $('#app').inert=true;
+  const o=$('#lesson');o.hidden=false;o.scrollTop=0;
+  $('#l-bar').setAttribute('aria-valuemax',String(L.total));
+  $('#l-close').innerHTML=ic('x');$('#l-gloss').innerHTML=ic('book');
+  $('#l-close').hidden=false;$('#l-hearts').hidden=false;$('#l-gloss').hidden=false;
+  nextEx();
+}
+function lessonTop(){
+  $('#l-fill').style.width=(L.done/L.total*100)+'%';
+  $('#l-bar').setAttribute('aria-valuenow',String(L.done));
+  $('#l-hearts').innerHTML=ic('heart')+'<span><span class="sr">Hearts left: </span>'+L.hearts+'</span>';
+}
+function nextEx(){
+  stopRec();lessonTop();
+  if(L.hearts<=0)return outOfHearts();
+  if(!L.q.length)return finishLesson();
+  L.cur=L.q.shift();L.checked=false;L.ok=false;
+  L.st=newSt();
+  renderEx();
+  $('#lesson').scrollTop=0;
+  const h=$('#q');if(h)h.focus({preventScroll:true});
+}
+function thumbHtml(){return '<div class="thumb">'+(SCENES[L.l.id]?SCENES[L.l.id]():'')+'</div>'}
+function audioBtns(t){return '<div class="audio"><button type="button" class="spk" data-say="'+esc(t)+'" aria-label="Play audio">'+ic('speaker')+'</button><button type="button" class="slow" data-say="'+esc(t)+'" data-slow="1" aria-label="Play audio slowly">Slow</button></div>'}
+function renderEx(){
+  const e=L.cur;let h='';
+  if(e.kind==='mc'){
+    h='<h1 class="q" id="q" tabindex="-1">'+esc(e.prompt)+'</h1>'+(e.say?'<div class="prompt">'+audioBtns(e.say)+'</div>':'')+
+      '<div class="opts" id="opts" role="radiogroup" aria-label="Choose the answer"></div>';
+  }else if(e.kind==='tr'){
+    h='<h1 class="q" id="q" tabindex="-1">'+(e.dir==='en2es'?'Write this in Spanish':'Write this in English')+'</h1>'+
+      '<div class="prompt">'+thumbHtml()+'<div class="pbody">'+(e.say?audioBtns(e.say):'')+'<p class="say-t">'+esc(e.src)+'</p></div></div>'+
+      '<div class="ans" id="ans" aria-label="Your answer" aria-live="polite"></div><div class="bank" id="bank" role="group" aria-label="Word bank"></div>';
+  }else if(e.kind==='speak'||e.kind==='cloze'){
+    h='<h1 class="q" id="q" tabindex="-1">'+(e.kind==='speak'?'Say this in Spanish':'Say the missing word')+'</h1>'+
+      '<div class="prompt">'+thumbHtml()+'<div class="pbody"><p class="say-t">'+esc(e.kind==='speak'?e.src:e.en)+'</p></div></div>'+
+      (e.kind==='cloze'?'<p class="blank-sentence">'+esc(e.before)+'<span class="blank"><span class="sr">blank</span></span>'+esc(e.after)+'</p>':'')+
+      '<div class="mic-wrap"><button type="button" class="mic" id="mic" data-act="mic">'+ic('mic')+'</button><p class="mic-state" id="mic-state"></p></div>'+
+      '<p class="heard" id="heard" role="status" aria-live="polite"></p><p class="mic-note">'+(NB?'The first time, iPhone will ask to use the microphone.':'Your browser may ask to use the microphone.')+' Speaking mistakes never cost a heart.</p>';
+  }else if(e.kind==='scen'){
+    h='<h1 class="q" id="q" tabindex="-1">What would you say?</h1>'+
+      '<div class="prompt">'+thumbHtml()+'<div class="pbody"><p class="sit">'+esc(e.sc.s)+'</p></div></div>'+
+      '<div class="prompt" style="margin-top:-6px"><div class="pbody">'+audioBtns(e.sc.es)+'<p class="say-t">'+esc(e.sc.en)+'</p></div></div><div id="scen"></div>';
+  }else{
+    h='<h1 class="q" id="q" tabindex="-1">Tap the matching pairs</h1><div class="match" id="match"></div>';
+  }
+  $('#l-body').innerHTML=h;
+  if(e.kind==='mc')renderMC();else if(e.kind==='tr')renderTr();else if(e.kind==='match')renderMatch();else if(e.kind==='scen')renderScen();else renderSpeak();
+  renderFoot();
+}
+function renderMC(){
+  const e=L.cur,s=L.st;
+  $('#opts').className='opts'+(e.pic?' pics':'');
+  $('#opts').innerHTML=e.opts.map((o,i)=>{
+    let cls='opt'+(e.pic?' pic':'');
+    if(L.checked){if(o.ok)cls+=' right';else if(s.sel===i)cls+=' wrong'}
+    const inner=e.pic?'<span class="emo" aria-hidden="true">'+o.emo+'</span>'+(L.checked?'<span class="cap">'+esc(o.t)+'</span>':''):'<span>'+esc(o.t)+'</span>';
+    const al=e.pic?' aria-label="'+esc(o.en)+'"':'';
+    return '<button type="button" role="radio" class="'+cls+'" data-opt="'+i+'" aria-checked="'+(s.sel===i)+'"'+al+(L.checked?' disabled':'')+'>'+inner+'<span class="key" aria-hidden="true">'+(i+1)+'</span></button>';
+  }).join('');
+}
+function renderScen(){
+  const e=L.cur,s=L.st,sc=e.sc;
+  $('#l-body').insertAdjacentHTML('beforeend','');
+  const box=$('#scen');
+  box.innerHTML='<p class="hint-lbl">Tap a phrase for a hint</p><div class="hint-row">'+sc.h.map((h,i)=>'<button type="button" class="hw" data-hw="'+i+'" aria-pressed="'+(s.hints.includes(i))+'"><span>'+esc(h[0])+'</span><span class="hs">'+esc(h[1])+'</span></button>').join('')+'</div>'+
+   '<label class="sr" for="typed">Your answer in Spanish</label><textarea id="typed" class="typed" lang="es" rows="2" autocapitalize="sentences" autocomplete="off" placeholder="Write it in Spanish"'+(L.checked?' disabled':'')+'>'+esc(s.typed||'')+'</textarea>'+
+   (L.checked?'':'<div class="reveal-row"><button type="button" class="btn btn-ghost btn-sm" data-act="reveal">Show answer</button></div>');
+}
+function renderTr(){
+  const e=L.cur,s=L.st,dis=L.checked?' disabled':'';
+  $('#ans').innerHTML=s.chosen.map(id=>{const b=e.bank.find(x=>x.id===id);return '<button type="button" class="tile" data-un="'+id+'"'+dis+'>'+esc(b.t)+'</button>'}).join('');
+  $('#bank').innerHTML=e.bank.map(b=>s.chosen.includes(b.id)?'<span class="tile ghost" aria-hidden="true">'+esc(b.t)+'</span>':'<button type="button" class="tile" data-pick="'+b.id+'"'+dis+'>'+esc(b.t)+'</button>').join('');
+}
+function renderMatch(){
+  const e=L.cur,s=L.st,focused=document.activeElement&&document.activeElement.dataset?document.activeElement.dataset.m:null;
+  const col=(arr,side,sel)=>arr.map((it,i)=>{
+    const key=side+i;let cls='tile';
+    if(s.matched.includes(key))cls+=' ok';else if(s.bad&&s.bad.includes(key))cls+=' bad';else if(sel===i)cls+=' sel';
+    return '<button type="button" class="'+cls+'" data-m="'+key+'"'+(s.matched.includes(key)?' disabled':'')+'>'+esc(it.t)+'</button>';
+  }).join('');
+  $('#match').innerHTML='<div class="col" role="group" aria-label="English">'+col(e.left,'l',s.a)+'</div><div class="col" role="group" aria-label="Spanish">'+col(e.right,'r',s.b)+'</div>';
+  if(focused){const f=$('[data-m="'+focused+'"]');if(f&&!f.disabled)f.focus({preventScroll:true})}
+}
+function canCheck(){
+  const e=L.cur,s=L.st;
+  if(e.kind==='mc')return s.sel!==null;
+  if(e.kind==='tr')return s.chosen.length>0;
+  if(e.kind==='scen')return (s.typed||'').trim().length>0;
+  return false;
+}
+function typedOk(typed,target){
+  const a=sp(typed).split(' ').filter(Boolean),b=sp(target).split(' ').filter(Boolean);
+  return a.length===b.length&&a.every((w,i)=>tokEq(w,b[i]));
+}
+function renderFoot(){
+  const f=$('#l-foot');
+  if(L.checked)return;
+  if(L.cur.kind==='speak'||L.cur.kind==='cloze'){f.innerHTML='<div class="foot-in"><button type="button" class="btn btn-ghost" data-act="nospeak">Can’t speak now</button></div>';return}
+  f.innerHTML='<div class="foot-in"><button type="button" class="btn btn-ghost" data-act="skip">Skip</button><button type="button" class="btn" data-act="check"'+(canCheck()?'':' disabled')+'>Check</button></div>';
+}
+function showFb(ok,ans,msg,extra){
+  const titles=['Nicely done!','Great job!','You got it!','Excellent!'];
+  $('#l-foot').innerHTML='<div class="fb '+(ok?'ok':'bad')+'"><div class="fb-in"><div class="fb-ico">'+ic(ok?'check':'x')+'</div><div role="status"><p class="fb-t">'+(ok?(msg||pick(titles)):'Correct answer:')+'</p>'+(ok?'':'<p class="fb-a">'+esc(ans)+'</p>')+(extra?'<p class="fb-a">'+esc(extra)+'</p>':'')+'</div>'+
+    '<button type="button" class="btn '+(ok?'':'btn-red')+'" id="cont" data-act="cont">Continue</button></div></div>';
+  $('#cont').focus({preventScroll:true});
+}
+function check(skip){
+  if(L.checked)return;
+  const e=L.cur,s=L.st;let ok=false,ans='';
+  if(e.kind==='mc'){ok=!skip&&s.sel!==null&&e.opts[s.sel].ok;ans=e.ans}
+  else if(e.kind==='tr'){const mine=s.chosen.map(id=>e.bank.find(b=>b.id===id).t).join(' ');ok=!skip&&norm(mine)===norm(e.tgt);ans=e.tgt}
+  else if(e.kind==='scen'){
+    ans=e.sc.es;
+    if(s.revealed){L.checked=true;L.att++;L.q.push(e);lessonTop();renderScen();showFb(true,'','Answer shown. Try it from memory later.');return}
+    ok=!skip&&[e.sc.es,...(e.sc.alt||[])].some(t=>typedOk(s.typed,t));
+  }
+  else return;
+  L.checked=true;L.ok=ok;L.att++;
+  if(ok){L.done++;L.right++}else{L.hearts--;L.q.push(e)}
+  lessonTop();
+  if(e.kind==='mc')renderMC();else if(e.kind==='scen')renderScen();else renderTr();
+  showFb(ok,ans,null,e.kind==='scen'&&!ok&&!skip?'You wrote: “'+s.typed.trim()+'”':'');
+}
+/* ---- speaking ---- */
+const digitWords={'0':'cero','1':'uno','2':'dos','3':'tres','4':'cuatro','5':'cinco','6':'seis','7':'siete','8':'ocho','9':'nueve','10':'diez'};
+const sp=s=>plain(s).replace(/[¿?¡!.,;:]/g,' ').replace(/\b(10|[0-9])\b/g,m=>digitWords[m]).replace(/\s+/g,' ').trim();
+function lev(a,b){const m=a.length,n=b.length,d=Array.from({length:m+1},(_,i)=>[i]);for(let j=1;j<=n;j++)d[0][j]=j;
+  for(let i=1;i<=m;i++)for(let j=1;j<=n;j++)d[i][j]=Math.min(d[i-1][j]+1,d[i][j-1]+1,d[i-1][j-1]+(a[i-1]===b[j-1]?0:1));return d[m][n]}
+function tokEq(a,b){if(a===b)return true;const n=Math.max(a.length,b.length);if(n<4)return false;return lev(a,b)<=(n>=8?2:1)}
+function speechScore(heard,target){
+  const h=sp(heard).split(' ').filter(Boolean),t=sp(target).split(' ').filter(Boolean);if(!t.length)return 0;
+  const used=h.map(()=>false);let m=0;
+  t.forEach(w=>{const i=h.findIndex((x,j)=>!used[j]&&tokEq(x,w));if(i>=0){used[i]=true;m++}});
+  return m/t.length;
+}
+function stopRec(){const s=L&&L.st;if(s&&s.rec){try{s.rec.onend=null;s.rec.abort()}catch(e){}s.rec=null;s.listening=false}}
+function renderSpeak(){
+  const s=L.st,m=$('#mic');if(!m)return;
+  m.classList.toggle('on',!!s.listening);m.disabled=!!L.checked;
+  m.setAttribute('aria-label',s.listening?'Listening. Tap to stop':'Tap to speak');
+  $('#mic-state').textContent=L.checked?'':(s.listening?'Listening…':(s.tried?'Tap to try again':'Tap to speak'));
+  $('#heard').textContent=s.msg||'';
+}
+const MIC_ERR={'not-allowed':'Microphone access is blocked. Allow it in your browser settings, or tap “Can’t speak now.”','service-not-allowed':'Microphone access is blocked. Allow it in your browser settings, or tap “Can’t speak now.”','audio-capture':'No microphone was found.','network':'Speech recognition needs an internet connection.','no-speech':'I did not hear anything. Tap the mic and try again.'};
+function toggleMic(){
+  const e=L.cur,s=L.st;if(L.checked)return;
+  if(NSR&&!SR)return toggleNativeMic(e,s);
+  if(s.listening){try{s.rec.stop()}catch(err){}return}
+  if(!SR){s.msg=NB?'Speech recognition is not available on this device.':'This browser cannot listen to speech.';renderSpeak();return}
+  let rec;try{rec=new SR()}catch(err){s.msg='Could not start the microphone.';renderSpeak();return}
+  rec.lang='es-US';rec.interimResults=false;rec.maxAlternatives=4;rec.continuous=false;
+  s.alts=[];s.err='';s.msg='';s.listening=true;s.tried=true;s.rec=rec;renderSpeak();
+  rec.onresult=ev=>{const r=ev.results[ev.results.length-1];s.alts=Array.from(r).map(a=>a.transcript)};
+  rec.onerror=ev=>{s.err=ev.error||'error'};
+  rec.onend=()=>{
+    s.listening=false;s.rec=null;
+    if(!L||L.cur!==e||L.checked)return;
+    if(s.alts.length)return judgeSpeech();
+    s.msg=MIC_ERR[s.err]||'I did not catch that. Tap the mic and try again.';renderSpeak();
+  };
+  try{rec.start()}catch(err){s.listening=false;s.rec=null;s.msg='Could not start the microphone.';renderSpeak()}
+}
+async function toggleNativeMic(e,s){
+  if(s.listening){try{await NSR.stop()}catch(err){}return}
+  s.alts=[];s.msg='';s.tried=true;s.listening=true;s.rec={stop(){NSR.stop().catch(()=>{})},abort(){NSR.stop().catch(()=>{})}};renderSpeak();
+  try{
+    const perm=await NSR.requestPermission();
+    if(!perm){s.listening=false;s.rec=null;s.msg=MIC_ERR['not-allowed'];renderSpeak();return}
+    const matches=await NSR.listen('es-US',4);
+    s.listening=false;s.rec=null;
+    if(!L||L.cur!==e||L.checked)return;
+    s.alts=(matches||[]).filter(Boolean);
+    if(s.alts.length)return judgeSpeech();
+    s.msg=MIC_ERR['no-speech'];renderSpeak();
+  }catch(err){
+    s.listening=false;s.rec=null;
+    if(!L||L.cur!==e||L.checked)return;
+    s.msg=/denied|permission/i.test(String(err&&err.message||err))?MIC_ERR['not-allowed']:'I did not catch that. Tap the mic and try again.';renderSpeak();
+  }
+}
+function judgeSpeech(){
+  const e=L.cur,s=L.st;let best=-1,heard='';
+  s.alts.forEach(a=>{
+    const sc=e.kind==='cloze'?(sp(a).split(' ').some(w=>tokEq(w,sp(e.word)))?1:0):speechScore(a,e.tgt);
+    if(sc>best){best=sc;heard=a}
+  });
+  const ok=e.kind==='cloze'?best>=1:best>=0.66;
+  L.checked=true;L.ok=ok;L.att++;
+  if(ok){L.done++;L.right++}else{L.q.push(e)}
+  s.msg='';lessonTop();renderSpeak();
+  showFb(ok,e.tgt,null,heard?'You said: “'+heard+'”':'');
+}
+function noSpeak(){
+  micPause=Date.now()+36e5;stopRec();
+  L.q=L.q.map(x=>x.alt||x);
+  const c=L.cur;
+  if(c&&c.alt&&!L.checked){L.cur=c.alt;L.st=newSt();renderEx();const h=$('#q');if(h)h.focus({preventScroll:true})}
+  toast('Speaking exercises are paused for an hour.');
+}
+
+/* ---- quick glossary ---- */
+function termRows(rows,q){
+  return rows.length?rows.map(g=>'<div class="term"><button type="button" class="spk" data-say="'+esc(g.es)+'" aria-label="Play '+esc(g.es)+'">'+ic('speaker')+'</button><div><p class="t-es">'+esc(g.es)+'</p><p class="t-en">'+esc(g.en)+'</p></div></div>').join('')
+   :'<div class="empty"><h2>No terms match “'+esc(q)+'”</h2><p>Try a shorter word, or search in English or Spanish.</p></div>';
+}
+function openQG(){
+  const d=$('#qg');
+  d.innerHTML='<div class="qg-head"><h2 id="qg-title">Quick glossary</h2><button type="button" class="icon-btn" data-act="qg-close" aria-label="Close glossary">'+ic('x')+'</button></div>'+
+   '<div class="qg-body"><div class="field" style="margin:8px 0 10px"><label for="qgs">Search terms</label><div class="sw">'+ic('search')+'<input id="qgs" type="search" autocomplete="off" autocapitalize="off" spellcheck="false" placeholder="English or Spanish"></div></div></div>'+
+   '<p class="count qg-count" id="qg-count" role="status" aria-live="polite"></p><div class="qg-list" id="qg-list"></div>'+
+   ((L||G)?'':'<div class="qg-foot"><button type="button" class="btn btn-blue btn-sm" data-act="qg-full" style="width:100%">Open full glossary</button></div>');
+  fillQG('');d.showModal();$('#qgs').focus();
+}
+function fillQG(q){
+  const k=plain(q.trim());
+  const rows=GLOSS_ALL.filter(g=>!k||plain(g.en).includes(k)||plain(g.es).includes(k));
+  $('#qg-count').textContent=rows.length+(rows.length===1?' term':' terms');
+  $('#qg-list').innerHTML=termRows(rows,q);
+}
+
+function matchTap(key){
+  const e=L.cur,s=L.st;if(L.checked||s.locked||s.matched.includes(key))return;
+  const side=key[0],i=+key.slice(1);
+  if(side==='l')s.a=(s.a===i?null:i);else s.b=(s.b===i?null:i);
+  if(s.a!==null&&s.b!==null){
+    if(e.left[s.a].k===e.right[s.b].k){
+      s.matched.push('l'+s.a,'r'+s.b);s.a=s.b=null;renderMatch();
+      if(s.matched.length===e.pairs.length*2){L.checked=true;L.ok=true;L.done++;L.right++;L.att++;lessonTop();showFb(true,'','All matched!')}
+    }else{
+      s.bad=['l'+s.a,'r'+s.b];s.locked=true;renderMatch();
+      setTimeout(()=>{if(L.cur!==e)return;s.bad=null;s.a=s.b=null;s.locked=false;renderMatch()},650);
+    }
+  }else renderMatch();
+}
+function outOfHearts(){
+  $('#l-body').innerHTML='<div class="done-wrap"><div class="sad-heart">'+ic('broken')+'</div><h1 id="q" tabindex="-1">You ran out of hearts</h1><p class="sub">Each wrong answer costs one heart. Review the phrases and try again.</p></div>';
+  $('#l-foot').innerHTML='<div class="foot-in"><button type="button" class="btn btn-ghost" data-act="quit-now">Quit lesson</button><button type="button" class="btn" data-act="retry" id="cont">Try again</button></div>';
+  $('#cont').focus({preventScroll:true});
+}
+function finishLesson(){
+  const acc=L.att?Math.round(L.right/L.att*100):100,secs=Math.max(1,Math.round((Date.now()-L.t0)/1000)),gain=(L.mode==='scen'?5:10)+(acc===100?5:0);
+  S.xp+=gain;S.right+=L.right;S.total+=L.att;if(L.mode!=='scen'&&!S.done.includes(L.l.id))S.done.push(L.l.id);
+  const t=dayStr();let up=false;
+  if(S.last!==t){S.streak=(S.last===yesterday()?S.streak:0)+1;S.last=t;up=true}
+  save();L.finished=true;
+  $('#l-close').hidden=true;$('#l-hearts').hidden=true;$('#l-gloss').hidden=true;
+  const time=Math.floor(secs/60)+':'+String(secs%60).padStart(2,'0');
+  $('#l-fill').style.width='100%';
+  $('#l-body').innerHTML='<div class="done-wrap"><div class="badge" aria-hidden="true">'+ic('star')+'</div><h1 id="q" tabindex="-1">'+(L.mode==='scen'?'Scenarios complete!':'Lesson complete!')+'</h1><p class="sub">'+esc(L.l.title)+'</p>'+
+    '<div class="stats3"><div class="st xp"><span class="st-h">Total XP</span><span class="st-v">'+ic('bolt')+gain+'</span></div>'+
+    '<div class="st acc"><span class="st-h">Accuracy</span><span class="st-v">'+acc+'%</span></div>'+
+    '<div class="st time"><span class="st-h">Time</span><span class="st-v">'+time+'</span></div></div>'+
+    (up?'<p class="streak-note">'+ic('flame')+'<span>'+S.streak+(S.streak===1?' day':' days')+' streak</span></p>':'')+'</div>';
+  $('#l-foot').innerHTML='<div class="foot-in"><button type="button" class="btn" data-act="finish" id="cont">Continue</button></div>';
+  const q=$('#q');if(q)q.focus({preventScroll:true});
+}
+function closeLesson(){
+  stopRec();
+  $('#lesson').hidden=true;$('#app').inert=false;
+  const id=L&&L.l.id;L=null;
+  renderTop();if(view==='learn'){renderLearn();scrollToCurrent()}
+  const n=id&&$('[data-node="'+id+'"]');
+  if(n)n.focus({preventScroll:true});else $('#main').focus({preventScroll:true});
+}
+function quitAsk(){
+  if(L&&L.finished){closeLesson();return}
+  ask({title:'Wait, do not go!',text:'You will lose the progress you made in this lesson if you quit now.',no:'Keep learning',yes:'End lesson',onYes:closeLesson});
+}
+
+/* ================= guidebook ================= */
+function openGuide(uid,from){
+  const u=UNITS.find(x=>x.id===uid);opener=from||null;
+  G={u,tab:0};
+  $('#app').inert=true;$('#guide').hidden=false;$('#guide').scrollTop=0;
+  $('#g-close').innerHTML=ic('back');
+  $('#g-title').textContent=u.guide.title+' guidebook';
+  renderGuide();$('#g-close').focus({preventScroll:true});
+}
+function renderGuide(){
+  const tabs=G.u.guide.tabs,t=tabs[G.tab];
+  let h='<div class="seg" role="tablist" aria-label="Guidebook sections">'+tabs.map((x,i)=>'<button type="button" role="tab" id="gt'+i+'" aria-selected="'+(i===G.tab)+'" tabindex="'+(i===G.tab?0:-1)+'" data-gtab="'+i+'">'+esc(x.label)+'</button>').join('')+'</div>'+
+   '<div role="tabpanel" aria-labelledby="gt'+G.tab+'"><p class="g-intro">'+esc(t.intro)+'</p><div class="tip">'+(t.tip.includes('<b>')?t.tip:esc(t.tip))+'</div>';
+  if(t.rows){
+    h+='<div class="tbl-wrap"><table class="vt"><thead><tr>'+t.head.map(x=>'<th scope="col">'+esc(x)+'</th>').join('')+'</tr></thead><tbody>'+
+      t.rows.map(r=>'<tr>'+r.map(c=>'<td>'+esc(c)+'</td>').join('')+'</tr>').join('')+'</tbody></table></div>';
+  }
+  h+='<h3 class="h3">Examples</h3>'+t.ex.map(x=>'<div class="term"><button type="button" class="spk" data-say="'+esc(x[0])+'" aria-label="Play '+esc(x[0])+'">'+ic('speaker')+'</button><div><p class="t-es">'+esc(x[0])+'</p><p class="t-en">'+esc(x[1])+'</p></div></div>').join('')+'</div>';
+  $('#g-body').innerHTML=h;
+}
+function closeGuide(){
+  $('#guide').hidden=true;$('#app').inert=false;G=null;
+  if(opener&&document.contains(opener))opener.focus({preventScroll:true});else $('#main').focus({preventScroll:true});
+}
+
+/* ================= events ================= */
+document.addEventListener('click',ev=>{
+  const t=ev.target.closest('button');if(!t)return;
+  const d=t.dataset;
+  if(d.say!==undefined){say(d.say,d.slow?0.6:0.95);return}
+  if(d.tab){setTab(d.tab);return}
+  if(d.node!==undefined&&t.classList.contains('node')){togglePop(t);return}
+  if(d.start){openLesson(d.start,$('[data-node="'+d.start+'"]'));return}
+  if(d.guide){openGuide(d.guide,t);return}
+  if(d.cat){gc=d.cat;$$('.chip').forEach(c=>c.setAttribute('aria-pressed',String(c.dataset.cat===gc)));fillGlossary();return}
+  if(d.gtab!==undefined){G.tab=+d.gtab;renderGuide();$('#gt'+G.tab).focus();return}
+  if(t.id==='g-close'){closeGuide();return}
+  if(t.id==='l-close'){quitAsk();return}
+  if(d.opt!==undefined&&L&&!L.checked){L.st.sel=+d.opt;renderMC();renderFoot();if(ev.detail===0){const n=$('[data-opt="'+d.opt+'"]');if(n)n.focus()}return}
+  if(d.pick!==undefined&&L&&!L.checked){L.st.chosen.push(+d.pick);renderTr();renderFoot();if(ev.detail===0){const n=$('[data-pick]');if(n)n.focus()}return}
+  if(d.un!==undefined&&L&&!L.checked){L.st.chosen=L.st.chosen.filter(i=>i!==+d.un);renderTr();renderFoot();if(ev.detail===0){const n=$('[data-pick="'+d.un+'"]');if(n)n.focus()}return}
+  if(d.m!==undefined&&L){matchTap(d.m);return}
+  if(d.scen){openLesson(d.scen,t,'scen');return}
+  if(d.hw!==undefined&&L){const i=+d.hw,on=t.getAttribute('aria-pressed')!=='true';t.setAttribute('aria-pressed',String(on));L.st.hints=on?L.st.hints.concat(i):L.st.hints.filter(x=>x!==i);return}
+  switch(d.act){
+    case'mic':toggleMic();break;
+    case'nospeak':noSpeak();break;
+    case'qg':openQG();break;
+    case'qg-close':$('#qg').close();break;
+    case'qg-full':$('#qg').close();setTab('glossary');break;
+    case'check':check(false);break;
+    case'skip':check(true);break;
+    case'cont':nextEx();break;
+    case'finish':closeLesson();break;
+    case'retry':openLesson(L.l.id,opener,L.mode);break;
+    case'reveal':if(L&&!L.checked){L.st.typed=L.cur.sc.es;L.st.revealed=true;renderScen();renderFoot();$('#typed').focus()}break;
+    case'quit-now':closeLesson();break;
+    case'clear-gloss':gq='';gc='all';renderGlossary();break;
+    case'reset':ask({title:'Reset your progress?',text:'This clears your streak, XP, and finished lessons on this device.',no:'Keep my progress',yes:'Reset progress',onYes:()=>{S=fresh();save();render()}});break;
+  }
+});
+document.addEventListener('input',ev=>{if(ev.target.id==='gs'){gq=ev.target.value;fillGlossary()}else if(ev.target.id==='qgs'){fillQG(ev.target.value)}else if(ev.target.id==='typed'&&L){L.st.typed=ev.target.value;renderFoot()}});
+document.addEventListener('change',ev=>{if(ev.target.id==='sp-toggle'){S.speak=ev.target.checked;save()}});
+document.addEventListener('keydown',ev=>{
+  if($('#dlg').open||$('#qg').open)return;
+  const lessonOpen=!$('#lesson').hidden,guideOpen=!$('#guide').hidden;
+  if(ev.key==='Escape'){
+    if(lessonOpen){ev.preventDefault();quitAsk()}else if(guideOpen){ev.preventDefault();closeGuide()}
+    return;
+  }
+  if(guideOpen&&ev.target.getAttribute&&ev.target.getAttribute('role')==='tab'&&(ev.key==='ArrowRight'||ev.key==='ArrowLeft')){
+    ev.preventDefault();const n=G.u.guide.tabs.length;G.tab=(G.tab+(ev.key==='ArrowRight'?1:n-1))%n;renderGuide();$('#gt'+G.tab).focus();return;
+  }
+  if(!lessonOpen||!L)return;
+  if(ev.target.id==='typed'){if(ev.key==='Enter'&&!ev.shiftKey){ev.preventDefault();if(L.checked){const c=$('#cont');if(c)c.click()}else if(canCheck())check(false)}return}
+  const onBtn=ev.target.tagName==='BUTTON'||ev.target.tagName==='INPUT';
+  if(L.cur&&L.cur.kind==='mc'&&!L.checked&&/^[1-4]$/.test(ev.key)&&+ev.key<=L.cur.opts.length){
+    L.st.sel=+ev.key-1;renderMC();renderFoot();return;
+  }
+  if(ev.key==='Enter'&&!onBtn){
+    if(L.checked){const c=$('#cont');if(c)c.click()}
+    else if(canCheck())check(false);
+  }
+});
+
+/* ================= boot ================= */
+$('#qg').addEventListener('click',ev=>{if(ev.target===ev.currentTarget)ev.currentTarget.close()});
+$('#qg').addEventListener('keydown',ev=>{if(ev.key==='Escape'){ev.preventDefault();ev.currentTarget.close()}});
+renderNav();render();scrollToCurrent();
+window.scrollTo(0,0);
+loadNative();
+})();
+</script>
+</body>
+</html>

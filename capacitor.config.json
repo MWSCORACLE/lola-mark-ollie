@@ -1,0 +1,15 @@
+{
+  "appId": "com.markwilson.bedsideespanol",
+  "appName": "Bedside Español",
+  "webDir": "www",
+  "ios": {
+    "contentInset": "automatic",
+    "backgroundColor": "#ffffff",
+    "preferredContentMode": "mobile",
+    "scrollEnabled": true
+  },
+  "plugins": {
+    "SplashScreen": { "launchShowDuration": 600, "launchAutoHide": true, "backgroundColor": "#58CC02", "showSpinner": false },
+    "StatusBar": { "style": "DEFAULT", "overlaysWebView": true }
+  }
+}
